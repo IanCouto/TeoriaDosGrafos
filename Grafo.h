@@ -1,5 +1,3 @@
-
-
 #ifndef TEORIADOSGRAFOS_GRAFO_H
 #define TEORIADOSGRAFOS_GRAFO_H
 
@@ -28,8 +26,14 @@ public:
     bool getPonderadoNo();
     No* getPrimeiroNo();
     No* getUltimoNo();
+    No *getNo(int id);
 
+    //Outros Metodos
+    void inserirAresta(int id, int id_destino, float peso);
+    void mostrarGrafo();
 
+    bool procurarNo(int id);
 
+    void inserirNo(int id);
 };
 #endif //TEORIADOSGRAFOS_GRAFO_H

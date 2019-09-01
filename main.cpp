@@ -5,7 +5,7 @@
 
 using namespace std;
 
-Grafo* leitura(ifstream& arquivo_entrada, int direcionado, int ponderadoArestas, int ponderadoNo){
+Grafo* leitura(ifstream& arquivo_entrada, int direcionado, int ponderadoAresta, int ponderadoNo){
 
     int ordem;
     int idNoOrigem;
@@ -17,7 +17,37 @@ Grafo* leitura(ifstream& arquivo_entrada, int direcionado, int ponderadoArestas,
 
     //Leitura do arquivo
 
+    //Quando grafo não é ponderado na aresta e nem no nó
+    if( !grafo->getPonderadoAresta() && !grafo->getPonderadoNo() ){
+        while (arquivo_entrada >> idNoOrigem >> idNoDestino)
+            grafo->inserirAresta(idNoOrigem,idNoDestino,0);
+    }
+    //Quando grafo é ponderado na aresta e não no nó
+    else if(grafo->getPonderadoAresta() && !grafo->getPonderadoNo() ){
+        float pesoAresta;
 
+        while (arquivo_entrada >> idNoOrigem >> idNoDestino >> pesoAresta)
+            grafo->inserirAresta(idNoOrigem,idNoDestino,pesoAresta);
+    }
+    //Quando grafo não é ponderado na aresta e é no nó
+    else if(!grafo->getPonderadoAresta() && grafo->getPonderadoNo() ) {
+        float pesoNoOrigem, pesoNoDestino;
+
+        while (arquivo_entrada >> idNoOrigem >> pesoNoOrigem >> idNoDestino >> pesoNoDestino){
+            grafo->inserirAresta(idNoOrigem,idNoDestino,0);
+            grafo->getNo(idNoOrigem)->setPeso(pesoNoOrigem);
+            grafo->getNo(idNoDestino)->setPeso(pesoNoDestino);
+        }
+    }
+    //Quando grafo é ponderado na aresta e no nó
+    else if(grafo->getPonderadoAresta() && grafo->getPonderadoNo() ){
+        float pesoNoOrigem, pesoNoDestino, pesoAresta;
+        while (arquivo_entrada >> idNoOrigem >> pesoNoOrigem >> idNoDestino >> pesoNoDestino >> pesoAresta){
+            grafo->inserirAresta(idNoOrigem,idNoDestino,pesoAresta);
+            grafo->getNo(idNoOrigem)->setPeso(pesoNoOrigem);
+            grafo->getNo(idNoDestino)->setPeso(pesoNoDestino);
+        }
+    }
 
     return grafo;
 }
@@ -45,12 +75,13 @@ int main(int argc, char* argv[]) {
     else
         cout << "Nao foi possivel abrir o arquivo " << argv[1] << endl;
 
-
     //Fechando arquivo de entrada
     arquivo_entrada.close();
 
     //Fechando arquivo de saída
     arquivo_saida.close();
+
+    grafo->mostrarGrafo();
 
     return 0;
 }

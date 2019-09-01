@@ -2,11 +2,11 @@
 #include "No.h"
 
 //Construtor
-Grafo::Grafo(int ordem, bool direcionado, bool ponderado_aresta, bool ponderadoNo){
+Grafo::Grafo(int ordem, bool direcionado, bool ponderado_aresta, bool ponderado_no){
     this->ordem = ordem;
     this->direcionado = direcionado;
     this->ponderado_aresta = ponderado_aresta;
-    this->ponderado_No = ponderado_No;
+    this->ponderado_no = ponderado_no;
     this->primeiro_no = this->ultimo_no = nullptr;
     this->quant_aresta = 0;
 }
@@ -52,12 +52,38 @@ bool Grafo::getPonderadoNo()
     return this->ponderado_no;
 }
 
-Node *Grafo::getPrimeiroNo()
+No *Grafo::getPrimeiroNo()
 {
     return this->primeiro_no;
 }
 
-Node *Grafo::getUltimoNo()
+No *Grafo::getUltimoNo()
 {
     return this->ultimo_no;
 }
+
+No *Grafo::getNo(int id){
+
+}
+
+//Outros metodos
+
+void Grafo::inserirNo(int id){
+
+}
+
+bool Grafo::procurarNo(int id){
+
+}
+
+void Grafo::inserirAresta(int id, int id_destino, float peso){
+
+}
+
+void Grafo::mostrarGrafo() {
+
+}
+
+
+
+
