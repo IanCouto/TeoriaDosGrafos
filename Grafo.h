@@ -29,11 +29,10 @@ public:
     No *getNo(int id);
 
     //Outros Metodos
+    bool procurarNo(int id);
+    void inserirNo(int id);
     void inserirAresta(int id, int id_destino, float peso);
     void mostrarGrafo();
 
-    bool procurarNo(int id);
-
-    void inserirNo(int id);
 };
 #endif //TEORIADOSGRAFOS_GRAFO_H
