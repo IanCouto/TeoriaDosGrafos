@@ -54,7 +54,7 @@ Grafo* leitura(ifstream& arquivo_entrada, int direcionado, int ponderadoAresta, 
 
 int main(int argc, char* argv[]) {
 
-    //Verificação se todos os parâmetros do programa foram entrados
+    //Verificação se todos os parâmetros do programa foram encontrados
     if (argc != 6) {
 
         cout << "ERRO: Esperado: ./<nome_programa> <arquivo_entrada> <arquivo_saida> <direcionado> <ponderado_arestas> <ponderado_no> " << endl;
