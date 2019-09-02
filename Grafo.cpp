@@ -65,6 +65,12 @@ No *Grafo::getUltimoNo()
     return this->ultimo_no;
 }
 
+//Setters
+
+void Grafo::setQuantAresta(int val){
+    this->quant_aresta++;
+}
+
 //Retorna um No com o determinado id, caso negativo retorna null
 No *Grafo::getNo(int id){
     if(this->primeiro_no != nullptr){
@@ -122,15 +128,26 @@ void Grafo::inserirAresta(int id, int id_destino, float peso){
     No* noOrigem = getNo(id);
     No* noDestino = getNo(id_destino);
 
-    noOrigem->inserirAresta(id_destino,peso);
-    noDestino->inserirAresta(id,peso);
+    if(!getDirecionado()){
+        noOrigem->inserirAresta(id_destino,peso);
+        noDestino->inserirAresta(id,peso);
 
-    noOrigem->aumentarGrauEntrada();
-    noDestino->aumentarGrauEntrada();
+        noOrigem->aumentarGrauEntrada();
+        noDestino->aumentarGrauEntrada();
+    }
+    else{
+        noOrigem->inserirAresta(id_destino,peso);
+
+        noOrigem->aumentarGrauSaida();
+        noDestino->aumentarGrauEntrada();
+    }
+
+    this->quant_aresta++;
 
 }
 
 void Grafo::mostrarGrafo() {
+    cout<<"No. Nos que possuem arestas - Grau de Entrada - Grau de saida - Peso"<<endl;
     for(No* no = primeiro_no; no != nullptr; no = no->getProximoNo()){
         cout << no->getId() << ".";
         for(Aresta* aresta = no->getPrimeiraAresta(); aresta != nullptr; aresta = aresta->getProximaAresta()){
@@ -140,10 +157,19 @@ void Grafo::mostrarGrafo() {
             else
                 cout << "," << aux->getId();
         }
-        cout << " - Grau de Entrada: " << no->getGrauEntrada();
-        cout << " - Grau de Saida: " << no->getGrauSaida();
-        cout << " - Peso: " << no->getPeso();
+        cout << " - E:" << no->getGrauEntrada();
+        cout << " - S:" << no->getGrauSaida();
+        cout << " - P:" << no->getPeso();
         cout << endl;
+    }
+}
+
+void Grafo::mostrarArestas(){
+    cout<<"[No de Origem , No de Destino] - Peso "<< endl;
+    for(No* no = primeiro_no; no != nullptr; no = no->getProximoNo()){
+        for(Aresta* aresta = no->getPrimeiraAresta(); aresta != nullptr; aresta = aresta->getProximaAresta()) {
+            cout << "[" << no->getId() << "," << aresta->getIdDestino() << "] - P: " << aresta->getPeso() << endl;
+        }
     }
 }
 

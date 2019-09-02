@@ -28,11 +28,16 @@ public:
     No* getUltimoNo();
     No *getNo(int id);
 
+    //Setters
+    void setQuantAresta(int val);
+
     //Outros Metodos
     bool procurarNo(int id);
     void inserirNo(int id);
     void inserirAresta(int id, int id_destino, float peso);
     void mostrarGrafo();
+    void mostrarArestas();
+
 
 };
 #endif //TEORIADOSGRAFOS_GRAFO_H

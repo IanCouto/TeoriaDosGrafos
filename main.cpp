@@ -82,6 +82,6 @@ int main(int argc, char* argv[]) {
     arquivo_saida.close();
 
     grafo->mostrarGrafo();
-
+    grafo->mostrarArestas();
     return 0;
 }
