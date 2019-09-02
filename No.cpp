@@ -71,12 +71,12 @@ void No::inserirAresta(int id_destino, float peso) {
     if(this->primeira_aresta != nullptr){
         Aresta* aresta = new Aresta(id_destino);
         aresta->setPeso(peso);
-        this->ultima_aresta->setProximaAresta(aresta);
+        this->ultima_aresta -> setProximaAresta(aresta);
         this->ultima_aresta = aresta;
     }
     else{
         this->primeira_aresta = new Aresta(id_destino);
-        this->primeira_aresta->setPeso(peso);
+        this->primeira_aresta -> setPeso(peso);
         this->ultima_aresta = this->primeira_aresta;
     }
 
