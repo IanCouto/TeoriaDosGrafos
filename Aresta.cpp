@@ -1,8 +1,43 @@
-//
-// Created by rodrigo on 26/08/2019.
-//
 #include "Aresta.h"
 
-Aresta::Aresta() {
-
+Aresta::Aresta(int id_destino) {
+    this->id_destino = id_destino;
+    this->proxima_aresta = nullptr;
+    this->peso = 0;
 }
+
+Aresta::~Aresta() {
+    if(this->proxima_aresta != nullptr){
+        delete this->proxima_aresta;
+        this->proxima_aresta = nullptr;
+    }
+}
+
+int Aresta::getIdDestino() {
+    return this->id_destino;
+}
+
+//Getters
+Aresta *Aresta::getProximaAresta() {
+    return this->proxima_aresta;
+}
+
+float Aresta::getPeso() {
+    return this->peso;
+}
+
+//Setters
+void Aresta::setProximaAresta(Aresta *aresta) {
+    this->proxima_aresta = aresta;
+}
+
+void Aresta::setPeso(float peso) {
+    this->peso = peso;
+}
+
+
+
+
+
+
+
