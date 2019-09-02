@@ -140,6 +140,9 @@ void Grafo::mostrarGrafo() {
             else
                 cout << "," << aux->getId();
         }
+        cout << " - Grau de Entrada: " << no->getGrauEntrada();
+        cout << " - Grau de Saida: " << no->getGrauSaida();
+        cout << " - Peso: " << no->getPeso();
         cout << endl;
     }
 }
