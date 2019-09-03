@@ -112,18 +112,12 @@ bool Grafo::procurarNo(int id){
 
 void Grafo::inserirAresta(int id, int id_destino, float peso){
 
-    //Nenhum dos nos estao no Grafo
-    if( !procurarNo(id) && !procurarNo(id_destino) ){
+    //Se algum no nao estiver No nao estiver no grafo
+    if( !procurarNo(id) )
         inserirNo(id);
+
+    if( !procurarNo(id_destino) )
         inserirNo(id_destino);
-    }
-    //Apenas um no esta no grafo
-    else if( procurarNo(id) && !procurarNo(id_destino) ){
-        inserirNo(id_destino);
-    }
-    else if( !procurarNo(id) && procurarNo(id_destino) ){
-        inserirNo(id);
-    }
 
     No* noOrigem = getNo(id);
     No* noDestino = getNo(id_destino);
