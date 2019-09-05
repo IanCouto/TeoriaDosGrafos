@@ -136,9 +136,10 @@ int No::removerAresta(int id, bool direcionado, No *no_destino) {
         delete aux;
 
         //Grafo direcionado ou nao
-        if(direcionado)
+        if(direcionado){
             this->diminuirGrauSaida();
-            //no_destino->diminuirGrauEntrada(); //PERGUNTAR PARA O PROFESSOR
+            no_destino->diminuirGrauEntrada();
+        }
         else{
             this->diminuirGrauEntrada();
             no_destino->diminuirGrauEntrada();

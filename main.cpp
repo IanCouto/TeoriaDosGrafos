@@ -81,7 +81,7 @@ Grafo* leitura(ifstream& arquivo_entrada, int direcionado, int ponderadoAresta, 
     //Quando grafo é ponderado na aresta e no nó
     else if(grafo->getPonderadoAresta() && grafo->getPonderadoNo() ){
         float pesoNoOrigem, pesoNoDestino, pesoAresta;
-        while (arquivo_entrada >> idNoOrigem >> pesoNoOrigem >> idNoDestino >> pesoNoDestino >> pesoAresta){ //pesoAresta PERGUNTAR PARA O PROFESSOR
+        while (arquivo_entrada >> idNoOrigem >> pesoNoOrigem >> idNoDestino >> pesoNoDestino >> pesoAresta){
             grafo->inserirAresta(idNoOrigem,idNoDestino,pesoAresta);
             grafo->getNo(idNoOrigem)->setPeso(pesoNoOrigem);
             grafo->getNo(idNoDestino)->setPeso(pesoNoDestino);
