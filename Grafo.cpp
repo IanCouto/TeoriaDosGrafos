@@ -154,7 +154,7 @@ void Grafo::mostrarGrafo(ofstream& arquivo_saida) {
         }
         arquivo_saida<<endl;
     }
-    arquivo_saida<<"----------------------------"<<endl;
+    arquivo_saida<<endl<<endl;
 }
 
 void Grafo::mostrarNos(ofstream& arquivo_saida) {
@@ -167,7 +167,7 @@ void Grafo::mostrarNos(ofstream& arquivo_saida) {
         arquivo_saida << " - P:" << no->getPeso();
         arquivo_saida << endl;
     }
-    arquivo_saida<<"----------------------------"<<endl;
+    arquivo_saida<<endl<<endl;
 }
 
 void Grafo::mostrarArestas(ofstream& arquivo_saida) {
@@ -178,7 +178,8 @@ void Grafo::mostrarArestas(ofstream& arquivo_saida) {
             arquivo_saida << "[" << no->getId() << "," << aresta->getIdDestino() << "] - P: " << aresta->getPeso() << endl;
         }
     }
-    arquivo_saida<<"----------------------------"<<endl;
+    arquivo_saida<<endl<<endl;
+
 }
 
 
