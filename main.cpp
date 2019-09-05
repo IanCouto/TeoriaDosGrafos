@@ -4,6 +4,45 @@
 #include "Grafo.h"
 
 using namespace std;
+int menu(){
+
+    int selecao;
+
+    cout << "MENU" << endl;
+    cout << "----" << endl;
+    cout << "[1] Mostrar Grafo" << endl;
+    cout << "[2] Mostrar Nos e suas informacoes" << endl;
+    cout << "[3] Mostrar Arestas e suas informacoes" << endl;
+    cout << "[0] Sair" << endl;
+
+    cin >> selecao;
+
+    return selecao;
+
+}
+
+void selecionar(int selecao, Grafo* grafo, ofstream& arquivo_saida){
+
+    switch (selecao) {
+
+        case 1:{
+            grafo->mostrarGrafo(arquivo_saida);
+            break;
+        }
+
+        case 2:{
+            grafo->mostrarNos(arquivo_saida);
+            break;
+        }
+
+        case 3:{
+            grafo->mostrarArestas(arquivo_saida);
+            break;
+        }
+
+    }
+}
+
 
 Grafo* leitura(ifstream& arquivo_entrada, int direcionado, int ponderadoAresta, int ponderadoNo){
 
@@ -75,13 +114,17 @@ int main(int argc, char* argv[]) {
     else
         cout << "Nao foi possivel abrir o arquivo " << argv[1] << endl;
 
+    int selecao = menu();
+    while (selecao!=0){
+        selecionar(selecao,grafo,arquivo_saida);
+        selecao = menu();
+    }
+
     //Fechando arquivo de entrada
     arquivo_entrada.close();
 
     //Fechando arquivo de saída
     arquivo_saida.close();
 
-    grafo->mostrarGrafo();
-    grafo->mostrarArestas();
     return 0;
 }

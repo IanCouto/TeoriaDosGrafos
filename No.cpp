@@ -91,6 +91,7 @@ void No::removerTodasArestas() {
         while (aux != nullptr) {
             prox = aux->getProximaAresta();
             delete aux;
+            aux=prox;
         }
     }
 

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "Grafo.h"
 #include "No.h"
 
@@ -140,31 +141,44 @@ void Grafo::inserirAresta(int id, int id_destino, float peso){
 
 }
 
-void Grafo::mostrarGrafo() {
-    cout<<"No. Nos que possuem arestas - Grau de Entrada - Grau de saida - Peso"<<endl;
+void Grafo::mostrarGrafo(ofstream& arquivo_saida) {
+    arquivo_saida<<"-----------GRAFO------------"<<endl;
     for(No* no = primeiro_no; no != nullptr; no = no->getProximoNo()){
-        cout << no->getId() << ".";
+        arquivo_saida << no->getId() << ".";
         for(Aresta* aresta = no->getPrimeiraAresta(); aresta != nullptr; aresta = aresta->getProximaAresta()){
             No* aux = getNo(aresta->getIdDestino());
             if(aresta == no->getPrimeiraAresta() )
-                cout << aux->getId();
+                arquivo_saida << aux->getId();
             else
-                cout << "," << aux->getId();
+                arquivo_saida << "," << aux->getId();
         }
-        cout << " - E:" << no->getGrauEntrada();
-        cout << " - S:" << no->getGrauSaida();
-        cout << " - P:" << no->getPeso();
-        cout << endl;
+        arquivo_saida<<endl;
     }
+    arquivo_saida<<"----------------------------"<<endl;
 }
 
-void Grafo::mostrarArestas(){
-    cout<<"[No de Origem , No de Destino] - Peso "<< endl;
+void Grafo::mostrarNos(ofstream& arquivo_saida) {
+    arquivo_saida<<"-----------NOS------------"<<endl;
+    arquivo_saida<<"No - Grau de Entrada - Grau de saida - Peso"<<endl;
+    for(No* no = primeiro_no; no != nullptr; no = no->getProximoNo()){
+        arquivo_saida << no->getId() << ".";
+        arquivo_saida << " - E:" << no->getGrauEntrada();
+        arquivo_saida << " - S:" << no->getGrauSaida();
+        arquivo_saida << " - P:" << no->getPeso();
+        arquivo_saida << endl;
+    }
+    arquivo_saida<<"----------------------------"<<endl;
+}
+
+void Grafo::mostrarArestas(ofstream& arquivo_saida) {
+    arquivo_saida<<"-----------ARESTAS------------"<<endl;
+    arquivo_saida<<"[No de Origem , No de Destino] - Peso "<< endl;
     for(No* no = primeiro_no; no != nullptr; no = no->getProximoNo()){
         for(Aresta* aresta = no->getPrimeiraAresta(); aresta != nullptr; aresta = aresta->getProximaAresta()) {
-            cout << "[" << no->getId() << "," << aresta->getIdDestino() << "] - P: " << aresta->getPeso() << endl;
+            arquivo_saida << "[" << no->getId() << "," << aresta->getIdDestino() << "] - P: " << aresta->getPeso() << endl;
         }
     }
+    arquivo_saida<<"----------------------------"<<endl;
 }
 
 

@@ -3,6 +3,8 @@
 
 #include "No.h"
 
+using namespace std;
+
 class Grafo{
 private:
     int ordem;
@@ -35,8 +37,9 @@ public:
     bool procurarNo(int id);
     void inserirNo(int id);
     void inserirAresta(int id, int id_destino, float peso);
-    void mostrarGrafo();
-    void mostrarArestas();
+    void mostrarGrafo(ofstream& arquivo_saida);
+    void mostrarArestas(ofstream& arquivo_saida);
+    void mostrarNos(ofstream& arquivo_saida);
 
 
 };
