@@ -13,6 +13,15 @@ int menu(){
     cout << "[1] Mostrar Grafo" << endl;
     cout << "[2] Mostrar Nos e suas informacoes" << endl;
     cout << "[3] Mostrar Arestas e suas informacoes" << endl;
+    cout << "[4] Caminhamento em largura" << endl;
+    cout << "[5] Caminhamento em profundidade" << endl;
+    cout << "[6] Fecho transitivo direto de um dado no" << endl;
+    cout << "[7] Fecho transitivo indireto de um dado no" << endl;
+    cout << "[8] Dijkstra: caminho minimo" << endl;
+    cout << "[9] Floyd: caminho minimo" << endl;
+    cout << "[10] Arvore Geradora Minima - Prim" << endl;
+    cout << "[11] Arvore Geradora Minima - Kruskal" << endl;
+    cout << "[12] Fecho triadico" << endl;
     cout << "[0] Sair" << endl;
 
     cin >> selecao;
@@ -37,6 +46,51 @@ void selecionar(int selecao, Grafo* grafo, ofstream& arquivo_saida){
 
         case 3:{
             grafo->mostrarArestas(arquivo_saida);
+            break;
+        }
+        //Caminhamento em largura
+        case 4:{
+
+            break;
+        }
+        //Caminhamento em profundidade
+        case 5:{
+
+            break;
+        }
+        //Fecho transitivo direto de um dado no
+        case 6:{
+
+            break;
+        }
+        //Fecho transitivo indireto de um dado no
+        case 7:{
+
+            break;
+        }
+        //Dijkstra: caminho minimo
+        case 8:{
+
+            break;
+        }
+        //Floyd: caminho minimo
+        case 9:{
+
+            break;
+        }
+        //Arvore Geradora Minima - Prim
+        case 10:{
+
+            break;
+        }
+        //Arvore Geradora Minima - Kruskal
+        case 11:{
+
+            break;
+        }
+        //Fecho triádico
+        case 12:{
+
             break;
         }
 
