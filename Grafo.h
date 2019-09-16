@@ -15,6 +15,8 @@ private:
     No* primeiro_no;
     No* ultimo_no;
 
+	void auxDijkstra(float* distancia, int* aPercorrer, int* noAnterior, int atual);
+
 public:
     //Contrutor e Destrutor
     Grafo(int ordem, bool direcionado, bool ponderadoAresta, bool ponderadoNo);
@@ -47,7 +49,7 @@ public:
     void caminhamentoProfundidade(int id_no, ofstream &arquivo_saida);
     void fechoTransitivoDireto(No no, ofstream &arquivo_saida);
     void fechoTransitivoIndireto(No no, ofstream &arquivo_saida);
-    void dijkstra(No noU, No noV, ofstream &arquivo_saida);
+    void dijkstra(No* noU, No* noV, ofstream& arquivo_saida);
     void floyd(No noU, No noV, ofstream &arquivo_saida);
     void AGMPrim(ofstream &arquivo_saida);
     void AGMKruskal(ofstream &arquivo_saida);
