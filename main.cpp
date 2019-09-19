@@ -60,7 +60,13 @@ void selecionar(int selecao, Grafo* grafo, ofstream& arquivo_saida){
         }
         //Fecho transitivo direto de um dado no
         case 6:{
-
+            int id;
+            cout << "Digite o id do no: ";
+            cin >> id;
+            if(grafo->procurarNo(id)) {
+                grafo->fechoTransitivoDireto(grafo->getNo(id), arquivo_saida);
+            } else
+                cout << endl << "Id inexistente!" << endl;
             break;
         }
         //Fecho transitivo indireto de um dado no

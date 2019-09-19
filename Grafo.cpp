@@ -182,6 +182,13 @@ void Grafo::mostrarArestas(ofstream& arquivo_saida) {
     arquivo_saida<<endl<<endl;
 }
 
+int Grafo::mapeamento(int* mapa, int id) {
+    for(int i=0; i < this->getOrdem(); i++) {
+        if(mapa[i] == id)
+            return i;
+    }
+}
+
 //------------FUNCIONALIDADES---------------
 
 //CAMINHAMENTO EM LARGURA-------------------
@@ -213,8 +220,62 @@ void Grafo::caminhamentoProfundidade(int id_no, ofstream& arquivo_saida){
 //direcionado com origem em v
 //Responsável:
 
-void Grafo::fechoTransitivoDireto(No no, ofstream& arquivo_saida){
+void Grafo::fechoTransitivoDireto(No* no, ofstream& arquivo_saida){
+    if(this->getDirecionado()) {
+        int* percorrido = new int[this->getOrdem()];
+        int* mapa = new int[this->getOrdem()];
+        int* acessivel = new int[this->getOrdem()];
 
+        No* aux = this->getPrimeiroNo();
+        for(int i=0; i < this->getOrdem(); i++, aux = aux->getProximoNo()) {
+            mapa[i] = aux->getId();
+            if(aux->getId() == no->getId())
+                percorrido[i] = 1;
+            else
+                percorrido[i] = 0;
+            acessivel[i] = 0;
+        }
+
+        aux = no;
+        for(int flag=1; flag==1;){
+            Aresta* aresta = aux->getPrimeiraAresta();
+            percorrido[mapeamento(mapa, aux->getId())] = 1;
+            int indiceDestino;
+            while(aresta != nullptr) {
+                indiceDestino = mapeamento(mapa, aresta->getIdDestino());
+                if(!percorrido[indiceDestino]) {
+                    acessivel[indiceDestino] = 1;
+                }
+                aresta = aresta->getProximaAresta();
+            }
+            flag=0;
+            for(int i=0; i < this->getOrdem() && flag == 0; i++) {
+                if(acessivel[i] && !percorrido[i]) {
+                    aux = this->getNo(mapa[i]);
+                    flag = 1;
+                } else
+                    flag = 0;
+            }
+        }
+
+        arquivo_saida<<"---Fecho Transitivo Direto---"<<endl;
+        arquivo_saida<<"[Conjunto de nos acessiveis de v]"<<endl;
+        arquivo_saida << "[";
+        int priImpresao=1;
+        for(int i=0; i < this->getOrdem(); i++) {
+            if(acessivel[i] && priImpresao) {
+                arquivo_saida << mapa[i];
+                priImpresao = 0;
+            } else if(acessivel[i])
+                arquivo_saida << ", " << mapa[i];
+        }
+        arquivo_saida << "]" << endl;
+        arquivo_saida << endl << endl;
+
+        delete[] percorrido;
+        delete[] mapa;
+        delete[] acessivel;
+    }
 }
 
 //-----------------------------------------
@@ -241,56 +302,70 @@ void Grafo::fechoTransitivoIndireto(No no, ofstream& arquivo_saida){
 
 void Grafo::dijkstra(No* noU, No* noV, ofstream& arquivo_saida){
     float* distancia = new float[this->getOrdem()];
+    int* mapa = new int[this->getOrdem()];
     int* aPercorrer = new int[this->getOrdem()];
     int* noAnterior = new int[this->getOrdem()];
-    for(int i=0; i < this->getOrdem(); i++) {
-        distancia[i] = -1;
-        aPercorrer[i] = 1;
+
+    No* no = this->getPrimeiroNo();
+    for(int i=0; i < this->getOrdem(); i++, no = no->getProximoNo()) {
+        mapa[i] = no->getId();
+        if(no->getId() == noU->getId()) {
+            distancia[i] = 0;
+            aPercorrer[i] = 0;
+        } else {
+            distancia[i] = -1;
+            aPercorrer[i] = 1;
+        }
         noAnterior[i] = -1;
     }
-    distancia[noU->getId()] = 0;
-    aPercorrer[noU->getId()] = 0;
 
-    auxDijkstra(distancia, aPercorrer, noAnterior, noU->getId());
+    auxDijkstra(distancia, aPercorrer, noAnterior, mapa, noU->getId());
 
     arquivo_saida<<"---------DIJKSTRA---------"<<endl;
     arquivo_saida<<"[Caminho entre noU e noV] - custo de caminho minimo"<<endl;
-    if(distancia[noV->getId()] != -1) {
+    if(distancia[mapeamento(mapa, noV->getId())] != -1) {
         arquivo_saida << "[" << noV->getId();
-        int caminho = noAnterior[noV->getId()];
+        int caminho = noAnterior[mapeamento(mapa, noV->getId())];
         while(caminho != -1) {
             arquivo_saida << ", " << caminho;
-            caminho = noAnterior[caminho];
+            caminho = noAnterior[mapeamento(mapa, caminho)];
         }
-        arquivo_saida << "] - " << distancia[noV->getId()] << endl;
+        arquivo_saida << "] - " << distancia[mapeamento(mapa, noV->getId())] << endl;
         arquivo_saida << endl << endl;
     } else {
         arquivo_saida << "[" << noU->getId() << ", " << noV->getId() << "] - -1";
     }
+    delete[] aPercorrer;
+    delete[] noAnterior;
+    delete[] distancia;
+    delete[] mapa;
 }
-void Grafo::auxDijkstra(float* distancia, int* aPercorrer, int* noAnterior, int atual){
+void Grafo::auxDijkstra(float* distancia, int* aPercorrer, int* noAnterior, int* mapa, int atual){
     No* no = this->getNo(atual);
     Aresta* aresta = no->getPrimeiraAresta();
+    int indiceAtual = mapeamento(mapa, atual);
+    int indiceAresta;
     while(aresta != nullptr) {
-        if(distancia[aresta->getIdDestino()] != -1) {
+        indiceAresta = mapeamento(mapa, aresta->getIdDestino());
+        if(distancia[indiceAresta] != -1) {
             if(this->getPonderadoAresta()) {
-                if(distancia[aresta->getIdDestino()] > distancia[atual] + aresta->getPeso()) {
-                    distancia[aresta->getIdDestino()] = distancia[atual] + aresta->getPeso();
-                    noAnterior[aresta->getIdDestino()] = atual;
+                if(distancia[indiceAresta] > distancia[indiceAtual] + aresta->getPeso()) {
+                    distancia[indiceAresta] = distancia[indiceAtual] + aresta->getPeso();
+                    noAnterior[indiceAresta] = atual;
                 }
             } else {
-                if(distancia[aresta->getIdDestino()] > distancia[atual] + 1) {
-                    distancia[aresta->getIdDestino()] = distancia[atual] + 1;
-                    noAnterior[aresta->getIdDestino()] = atual;
+                if(distancia[indiceAresta] > distancia[indiceAtual] + 1) {
+                    distancia[indiceAresta] = distancia[indiceAtual] + 1;
+                    noAnterior[indiceAresta] = atual;
                 }
             }
         } else {
             if(this->getPonderadoAresta()) {
-                distancia[aresta->getIdDestino()] = distancia[atual] + aresta->getPeso();
-                noAnterior[aresta->getIdDestino()] = atual;
+                distancia[indiceAresta] = distancia[indiceAtual] + aresta->getPeso();
+                noAnterior[indiceAresta] = atual;
             } else {
-                distancia[aresta->getIdDestino()] = distancia[atual] + 1;
-                noAnterior[aresta->getIdDestino()] = atual;
+                distancia[indiceAresta] = distancia[indiceAtual] + 1;
+                noAnterior[indiceAresta] = atual;
             }
         }
         aresta = aresta->getProximaAresta();
@@ -300,7 +375,7 @@ void Grafo::auxDijkstra(float* distancia, int* aPercorrer, int* noAnterior, int 
         if(aPercorrer[i]) {
             if(distancia[i] != -1) {
                 menor = distancia[i];
-                atual = i;
+                atual = mapa[i];
             }
         }
     }
@@ -310,11 +385,11 @@ void Grafo::auxDijkstra(float* distancia, int* aPercorrer, int* noAnterior, int 
                 if(distancia[i] != -1)
                     if(distancia[i] < menor){
                         menor = distancia[i];
-                        atual = i;
+                        atual = mapa[i];
                     }
         }
-        aPercorrer[atual] = 0;
-        auxDijkstra(distancia, aPercorrer, noAnterior, atual);
+        aPercorrer[indiceAtual] = 0;
+        auxDijkstra(distancia, aPercorrer, noAnterior, mapa, atual);
     }
 }
 
