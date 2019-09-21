@@ -259,7 +259,7 @@ void Grafo::fechoTransitivoDireto(No* no, ofstream& arquivo_saida){
         }
 
         arquivo_saida<<"---Fecho Transitivo Direto---"<<endl;
-        arquivo_saida<<"[Conjunto de nos acessiveis de v]"<<endl;
+        arquivo_saida<<"[Conjunto de nos acessiveis com origem em v]"<<endl;
         arquivo_saida << "[";
         int priImpresao=1;
         for(int i=0; i < this->getOrdem(); i++) {
@@ -285,8 +285,58 @@ void Grafo::fechoTransitivoDireto(No* no, ofstream& arquivo_saida){
 //um caminho direcionado com origem em u
 //Responsável:
 
-void Grafo::fechoTransitivoIndireto(No no, ofstream& arquivo_saida){
+void Grafo::fechoTransitivoIndireto(No* no, ofstream& arquivo_saida){
+    if(this->getDirecionado()) {
+        int* mapa = new int[this->getOrdem()];
+        int* acessivel = new int[this->getOrdem()];
 
+        No* aux = this->getPrimeiroNo();
+        for(int i=0; i < this->getOrdem(); i++, aux = aux->getProximoNo()) {
+            mapa[i] = aux->getId();
+            if(aux->getId() == no->getId())
+                acessivel[i] = 1;
+            else
+                acessivel[i] = 0;
+        }
+        //Continuar
+
+        for(int flag=1; flag==1; ){
+            flag = 0;
+            aux = this->getPrimeiroNo();
+            while(aux !=nullptr) {
+                int indiceAtual = mapeamento(mapa, aux->getId());
+                Aresta* aresta = aux->getPrimeiraAresta();
+                while(aresta != nullptr) {
+                    int indiceDestino = mapeamento(mapa, aresta->getIdDestino());
+                    if(acessivel[indiceDestino] && !acessivel[indiceAtual]) {
+                        acessivel[indiceAtual] = 1;
+                        flag = 1;
+                    }
+                    aresta = aresta->getProximaAresta();
+                }
+                aux = aux->getProximoNo();
+            }
+        }
+
+        arquivo_saida<<"---Fecho Transitivo Indireto---"<<endl;
+        arquivo_saida<<"[Conjunto de nos que acessam v com origem em u]"<<endl;
+        arquivo_saida << "[";
+        int priImpresao=1;
+        for(int i=0; i < this->getOrdem(); i++) {
+            if(mapa[i] != no->getId()) {
+                if(acessivel[i] && priImpresao) {
+                    arquivo_saida << mapa[i];
+                    priImpresao = 0;
+                } else if(acessivel[i])
+                    arquivo_saida << ", " << mapa[i];
+            }
+        }
+        arquivo_saida << "]" << endl;
+        arquivo_saida << endl << endl;
+
+        delete[] mapa;
+        delete[] acessivel;
+    }
 }
 
 //-----------------------------------------

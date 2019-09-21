@@ -49,7 +49,7 @@ public:
     void caminhamentoLargura(int id_no, ofstream &arquivo_saida);
     void caminhamentoProfundidade(int id_no, ofstream &arquivo_saida);
     void fechoTransitivoDireto(No* no, ofstream &arquivo_saida);
-    void fechoTransitivoIndireto(No no, ofstream &arquivo_saida);
+    void fechoTransitivoIndireto(No* no, ofstream &arquivo_saida);
     void dijkstra(No* noU, No* noV, ofstream& arquivo_saida);
     void floyd(No noU, No noV, ofstream &arquivo_saida);
     void AGMPrim(ofstream &arquivo_saida);

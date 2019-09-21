@@ -71,7 +71,13 @@ void selecionar(int selecao, Grafo* grafo, ofstream& arquivo_saida){
         }
         //Fecho transitivo indireto de um dado no
         case 7:{
-
+            int id;
+            cout << "Digite o id do no: ";
+            cin >> id;
+            if(grafo->procurarNo(id)) {
+                grafo->fechoTransitivoIndireto(grafo->getNo(id), arquivo_saida);
+            } else
+                cout << endl << "Id inexistente!" << endl;
             break;
         }
         //Dijkstra: caminho minimo
