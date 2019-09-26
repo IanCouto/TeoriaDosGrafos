@@ -47,6 +47,7 @@ public:
     //FUNCIONALIDADES
 
     void caminhamentoLargura(int id_no, ofstream &arquivo_saida);
+    void auxBuscaEmProfundidade(int id_no, bool* aux,ofstream &arquivo_saida);
     void caminhamentoProfundidade(int id_no, ofstream &arquivo_saida);
     void fechoTransitivoDireto(No* no, ofstream &arquivo_saida);
     void fechoTransitivoIndireto(No* no, ofstream &arquivo_saida);
