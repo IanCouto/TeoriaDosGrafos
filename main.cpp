@@ -55,7 +55,10 @@ void selecionar(int selecao, Grafo* grafo, ofstream& arquivo_saida){
         }
         //Caminhamento em profundidade
         case 5:{
-
+            int idOrigem;
+            cout << "Digite o id do no inicial: ";
+            cin >> idOrigem;
+            grafo->caminhamentoProfundidade(idOrigem, arquivo_saida);
             break;
         }
         //Fecho transitivo direto de um dado no
