@@ -209,7 +209,7 @@ void Grafo::caminhamentoLargura(int id_no, ofstream& arquivo_saida){
 //aresta de retorno
 //Responsável:Wiliam
 
-void Grafo::auxBuscaEmProfundidade(int id, bool* aux, ofstream& arquivo_saida){
+void Grafo::auxBuscaEmProfundidade(int id_no, bool* aux, ofstream& arquivo_saida){
     aux[id] = true;
     No* noAux= getNo(id);
     for(Aresta* arestaAux= noAux->getPrimeiraAresta();arestaAux!=nullptr;arestaAux=arestaAux->getProximaAresta()){
