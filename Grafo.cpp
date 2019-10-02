@@ -210,15 +210,15 @@ void Grafo::caminhamentoLargura(int id_no, ofstream& arquivo_saida){
 //Responsável:Wiliam
 
 void Grafo::auxBuscaEmProfundidade(int id_no, bool* aux, ofstream& arquivo_saida){
-    aux[id] = true;
-    No* noAux= getNo(id);
+    aux[id_no] = true;
+    No* noAux= getNo(id_no);
     for(Aresta* arestaAux= noAux->getPrimeiraAresta();arestaAux!=nullptr;arestaAux=arestaAux->getProximaAresta()){
             if(aux[arestaAux->getIdDestino()]==false){
-                arquivo_saida<<"["<<id<<" , "<<arestaAux->getIdDestino()<<"] nao é retorno"<<endl;
+                arquivo_saida<<"["<<id_no<<" , "<<arestaAux->getIdDestino()<<"] nao é retorno"<<endl;
                 auxBuscaEmProfundidade(arestaAux->getIdDestino(),aux,arquivo_saida);
             }
             else{
-                arquivo_saida<<"["<<id<<","<<arestaAux->getIdDestino()<<"] é uma aresta de retorno"<<endl;
+                arquivo_saida<<"["<<id_no<<","<<arestaAux->getIdDestino()<<"] é uma aresta de retorno"<<endl;
             }
     }
 }
