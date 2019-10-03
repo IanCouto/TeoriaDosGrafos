@@ -2,6 +2,7 @@
 #include <fstream>
 #include "Grafo.h"
 #include "No.h"
+#include "FilaEncadeada.h"
 
 
 using namespace std;
