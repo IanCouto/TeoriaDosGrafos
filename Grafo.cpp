@@ -3,6 +3,7 @@
 #include "Grafo.h"
 #include "No.h"
 
+
 using namespace std;
 
 //Construtor
@@ -17,6 +18,7 @@ Grafo::Grafo(int ordem, bool direcionado, bool ponderado_aresta, bool ponderado_
 Grafo::Grafo(){
 
 }
+
 
 // Destrutor
 Grafo::~Grafo()
@@ -116,7 +118,7 @@ bool Grafo::procurarNo(int id){
 
 void Grafo::inserirAresta(int id, int id_destino, float peso){
 
-    //Se algum no nao estiver No nao estiver no grafo
+    //Se algum No nao estiver no grafo
     if( !procurarNo(id) )
         inserirNo(id);
 
@@ -499,11 +501,66 @@ void Grafo::AGMPrim(ofstream& arquivo_saida){
 //deve retornar um conjunto com n-1 arestas que conecte todos os nós do grafo e cujo somatório dos pesos
 //das arestas seja mínimo. No caso de grafos não ponderados, qualquer conjunto com n-1 arestas que
 //conecte o grafo é solução do problema
-//Responsável:
+//Responsável: Rodrigo
+
+class arestaKruskal {
+public:
+    int origem;
+    int destino;
+    int peso;
+};
 
 void Grafo::AGMKruskal(ofstream& arquivo_saida){
+    int i=0,quantNos=0;
+    int tam = this->getQuantAresta();
+    arestaKruskal *listaAresta = new arestaKruskal[tam];
+    int nosJaVisitados[this->getOrdem()];
 
+
+
+    //Adiciona todas as arestas do grafo em uma lista de arestas
+    for (No* n = this->getPrimeiroNo(); n != nullptr; n = n->getProximoNo()) {
+        nosJaVisitados[quantNos] = n->getId();
+        quantNos++;
+        for(Aresta* a = n->getPrimeiraAresta(); a != nullptr; a = a->getProximaAresta()) {
+            if(!verificaId(nosJaVisitados,a->getIdDestino(),this->getOrdem())) {
+                listaAresta[i].origem = a->getIdOrigem();
+                listaAresta[i].destino = a->getIdDestino();
+                listaAresta[i].peso = a->getPeso();
+                i++;
+            }
+        }
+    }
+
+    //ordena a lista de aresta por peso em ordem crescente
+    arestaKruskal aux;
+    for (int j = 0; j < tam; j++) {
+        for (int k = j+1; k < tam ; k++) {
+            if (listaAresta[j].peso > listaAresta[k].peso) {
+                aux = listaAresta[j];
+                listaAresta[j] = listaAresta[k];
+                listaAresta[k] = aux;
+            }
+        }
+    }
+
+
+    for (int l = 0; l < tam; l++) {
+        cout << listaAresta[l].origem << "/" << listaAresta[l].destino << "-" << listaAresta[l].peso<<endl;
+    }
+
+    delete [] listaAresta;
 }
+
+//verifica se o No já foi visitado, portando não será necessário colocar a aresta
+bool Grafo::verificaId(int nosJaVisitados[], int id_no, int tam){
+    for (int i = 0; i < tam; i++) {
+        if(nosJaVisitados[i] == id_no)
+            return true;
+    }
+    return false;
+}
+
 
 //-----------------------------------------
 

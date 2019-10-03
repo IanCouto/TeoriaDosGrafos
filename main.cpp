@@ -108,7 +108,7 @@ void selecionar(int selecao, Grafo* grafo, ofstream& arquivo_saida){
         }
         //Arvore Geradora Minima - Kruskal
         case 11:{
-
+            grafo->AGMKruskal(arquivo_saida);
             break;
         }
         //Fecho triádico

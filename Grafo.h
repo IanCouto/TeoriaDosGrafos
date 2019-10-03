@@ -19,9 +19,10 @@ private:
 	void auxDijkstra(float* distancia, int* aPercorrer, int* noAnterior, int* mapa, int atual);
 
 public:
+
     //Contrutor e Destrutor
+    Grafo();
     Grafo(int ordem, bool direcionado, bool ponderadoAresta, bool ponderadoNo);
-	Grafo();
     ~Grafo();
 
     //Getters
@@ -57,5 +58,9 @@ public:
     void AGMPrim(ofstream &arquivo_saida);
     void AGMKruskal(ofstream &arquivo_saida);
     void fechoTriadico(ofstream &arquivo_saida);
+
+   //AUXILIARES DAS FUNCIONALIDADES
+   //AGMKruskal
+   bool verificaId(int nosJaVisitados[], int id_no,int tam);
 };
 #endif //TEORIADOSGRAFOS_GRAFO_H
