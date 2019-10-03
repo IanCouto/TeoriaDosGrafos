@@ -21,6 +21,7 @@ private:
 public:
     //Contrutor e Destrutor
     Grafo(int ordem, bool direcionado, bool ponderadoAresta, bool ponderadoNo);
+	Grafo();
     ~Grafo();
 
     //Getters
