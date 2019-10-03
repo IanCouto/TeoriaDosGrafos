@@ -184,7 +184,7 @@ int main(int argc, char* argv[]) {
     arquivo_entrada.open(argv[1], ios::in);
     arquivo_saida.open(argv[2], ios::out | ios::trunc);
 
-    Grafo* grafo;
+	Grafo* grafo = new Grafo();
 
     if(arquivo_entrada.is_open())
         grafo = leitura(arquivo_entrada, atoi(argv[3]), atoi(argv[4]), atoi(argv[5])); //atoi = converte string para int
