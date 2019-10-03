@@ -1,5 +1,7 @@
 #ifndef TEORIADOSGRAFOS_GRAFO_H
 #define TEORIADOSGRAFOS_GRAFO_H
+#include <iostream>
+#include <fstream>
 
 #include "No.h"
 
