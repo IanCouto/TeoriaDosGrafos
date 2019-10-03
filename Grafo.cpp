@@ -203,7 +203,40 @@ int Grafo::mapeamento(int* mapa, int id) {
 //Responsável:
 
 void Grafo::caminhamentoLargura(int id_no, ofstream& arquivo_saida){
+    bool* verificavisitado=new bool[this->ordem];
 
+    //preenche o vetor com 0
+    for(int i=0;i<this->ordem;i++){
+        verificavisitado[i]=false;
+    }
+
+    //Fila e ja coloca o no alvo como visitado
+    FilaEncadeada* fila=new FilaEncadeada();
+    verificavisitado[id_no]=true;
+
+    //começa a fila com o primeiro vertice visitado
+    fila->enfileira(id_no);
+
+    //repetição até a fila ficar vazia
+    while(fila->vazia()==false){
+        No* noAux= getNo(id_no);
+        Aresta* auxiliar=noAux->getPrimeiraAresta();
+        while(auxiliar!=nullptr){
+            //quando ele visita um nó, ele marca no vetor de bool no indice tal como "1" ou "0", se o destino da aresta ja for
+            //um indice com 1(true) é porque é de retorno, caso contrario 0(false)nao é retorno.
+            if(verificavisitado[auxiliar->getIdDestino()]==false)
+            {
+            arquivo_saida<<"["<<fila->getInicio()<<","<<auxiliar->getIdDestino()<<"] nao é retorno"<<endl;
+            verificavisitado[auxiliar->getIdDestino()]=true;
+            fila->enfileira(auxiliar->getIdDestino());
+            }
+            else
+            {
+                arquivo_saida<<"["<<fila->getInicio()<<" , "<<auxiliar->getIdDestino()<<"] é retorno"<<endl;
+            }
+            auxiliar=auxiliar->getProximaAresta();
+        }fila->desenfileira();
+    }
 }
 
 //-----------------------------------------
