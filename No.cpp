@@ -69,13 +69,13 @@ void No::setPeso(float peso) {
 void No::inserirAresta(int id_destino, float peso) {
     //Verifica se existe pelo menos uma aresta no No, caso negativo, a primeira aresta sera setada
     if(this->primeira_aresta != nullptr){
-        Aresta* aresta = new Aresta(id_destino);
+        Aresta* aresta = new Aresta(this->id,id_destino);
         aresta->setPeso(peso);
         this->ultima_aresta -> setProximaAresta(aresta);
         this->ultima_aresta = aresta;
     }
     else{
-        this->primeira_aresta = new Aresta(id_destino);
+        this->primeira_aresta = new Aresta(this->id,id_destino);
         this->primeira_aresta -> setPeso(peso);
         this->ultima_aresta = this->primeira_aresta;
     }
@@ -98,7 +98,7 @@ void No::removerTodasArestas() {
     this->primeira_aresta = this->ultima_aresta = nullptr;
 }
 
-//Verifica se a aresta esta presente no grafo
+//Verifica se o no possui uma aresta para o no de destino
 bool No::procurarAresta(int id_destino) {
     if(this->primeira_aresta != nullptr){
         for(Aresta* aux = this->primeira_aresta; aux!= nullptr; aux = aux->getProximaAresta()){

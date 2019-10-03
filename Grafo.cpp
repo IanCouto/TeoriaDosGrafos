@@ -3,6 +3,7 @@
 #include "Grafo.h"
 #include "No.h"
 
+
 using namespace std;
 
 //Construtor
@@ -14,6 +15,10 @@ Grafo::Grafo(int ordem, bool direcionado, bool ponderado_aresta, bool ponderado_
     this->primeiro_no = this->ultimo_no = nullptr;
     this->quant_aresta = 0;
 }
+Grafo::Grafo(){
+
+}
+
 
 // Destrutor
 Grafo::~Grafo()
@@ -113,7 +118,7 @@ bool Grafo::procurarNo(int id){
 
 void Grafo::inserirAresta(int id, int id_destino, float peso){
 
-    //Se algum no nao estiver No nao estiver no grafo
+    //Se algum No nao estiver no grafo
     if( !procurarNo(id) )
         inserirNo(id);
 
@@ -192,10 +197,10 @@ int Grafo::mapeamento(int* mapa, int id) {
 //------------FUNCIONALIDADES---------------
 
 //CAMINHAMENTO EM LARGURA-------------------
-//a função deve receber como parâmetro o Id de um nó e imprimir o conjunto de arestas visitadas a
-//partir do mesmo em um percurso em largura indicando, para cada uma, se trata-se ou não de uma aresta
+//a funÃ§Ã£o deve receber como parÃ¢metro o Id de um nÃ³ e imprimir o conjunto de arestas visitadas a
+//partir do mesmo em um percurso em largura indicando, para cada uma, se trata-se ou nÃ£o de uma aresta
 //de retorno
-//Responsável:
+//ResponsÃ¡vel:
 
 void Grafo::caminhamentoLargura(int id_no, ofstream& arquivo_saida){
 
@@ -204,21 +209,39 @@ void Grafo::caminhamentoLargura(int id_no, ofstream& arquivo_saida){
 //-----------------------------------------
 
 //CAMINHAMENTO EM PROFUNDIDADE-------------
-//a função deve receber como parâmetro o Id de um nó e imprimir o conjunto de arestas visitadas a
-//partir do mesmo em um percurso em profundidade indicando, para cada uma, se trata-se ou não de uma
+//a funÃ§Ã£o deve receber como parÃ¢metro o Id de um nÃ³ e imprimir o conjunto de arestas visitadas a
+//partir do mesmo em um percurso em profundidade indicando, para cada uma, se trata-se ou nÃ£o de uma
 //aresta de retorno
-//Responsável:
+//ResponsÃ¡vel:Wiliam
+
+void Grafo::auxBuscaEmProfundidade(int id_no, bool* aux, ofstream& arquivo_saida){
+    aux[id_no] = true;
+    No* noAux= getNo(id_no);
+    for(Aresta* arestaAux= noAux->getPrimeiraAresta();arestaAux!=nullptr;arestaAux=arestaAux->getProximaAresta()){
+            if(aux[arestaAux->getIdDestino()]==false){
+                arquivo_saida<<"["<<id_no<<" , "<<arestaAux->getIdDestino()<<"] nao Ã© retorno"<<endl;
+                auxBuscaEmProfundidade(arestaAux->getIdDestino(),aux,arquivo_saida);
+            }
+            else{
+                arquivo_saida<<"["<<id_no<<","<<arestaAux->getIdDestino()<<"] Ã© uma aresta de retorno"<<endl;
+            }
+    }
+}
 
 void Grafo::caminhamentoProfundidade(int id_no, ofstream& arquivo_saida){
-
+    bool *aux=new bool[this->ordem];
+    for (int i=0;i<this->ordem;i++){
+        aux[i]=false;
+    }
+    auxBuscaEmProfundidade(id_no,aux,arquivo_saida);
 }
 
 //-----------------------------------------
 
-//FECHO TRANSITIVO DIRETO DE UM DADO NÓ (PARA GRAFO ORIENTADO)
-//para um dado nó v do grafo, a função deve imprimir o Id de todo nó u alcançável por um caminho
+//FECHO TRANSITIVO DIRETO DE UM DADO NÃ“ (PARA GRAFO ORIENTADO)
+//para um dado nÃ³ v do grafo, a funÃ§Ã£o deve imprimir o Id de todo nÃ³ u alcanÃ§Ã¡vel por um caminho
 //direcionado com origem em v
-//Responsável:
+//ResponsÃ¡vel:
 
 void Grafo::fechoTransitivoDireto(No* no, ofstream& arquivo_saida){
     if(this->getDirecionado()) {
@@ -280,10 +303,10 @@ void Grafo::fechoTransitivoDireto(No* no, ofstream& arquivo_saida){
 
 //-----------------------------------------
 
-//FECHO TRANSITIVO INDIRETO DE UM DADO NÓ (PARA GRAFO ORIENTADO)
-//para um dado nó v do grafo, a função deve imprimir o Id de todo nó u que pode alcançar o nó v por
+//FECHO TRANSITIVO INDIRETO DE UM DADO NÃ“ (PARA GRAFO ORIENTADO)
+//para um dado nÃ³ v do grafo, a funÃ§Ã£o deve imprimir o Id de todo nÃ³ u que pode alcanÃ§ar o nÃ³ v por
 //um caminho direcionado com origem em u
-//Responsável:
+//ResponsÃ¡vel:
 
 void Grafo::fechoTransitivoIndireto(No* no, ofstream& arquivo_saida){
     if(this->getDirecionado()) {
@@ -341,14 +364,14 @@ void Grafo::fechoTransitivoIndireto(No* no, ofstream& arquivo_saida){
 
 //-----------------------------------------
 
-//DIJKSTRA: CAMINHO MÍNIMO (PARA GRAFOS ORIENTADOS OU NÃO ORIENTADOS)
-//para um dado grafo (orientado ou não, ponderado ou não), a função deve receber o Id de dois
-//vértices u e v e mostrar um caminho mínimo entre u e v, bem como o custo deste caminho calculado a
-//partir do algoritmo de Dijkstra. O caminho a ser mostrado consiste na sequência de vértices entre u e v tal
-//que o somatório dos pesos das arestas entre vértices consecutivos na sequência seja mínima. Note que,
-//para grafos não ponderados, um caminho mínimo entre dois vértices consiste numa sequência de vértices
-//entre os mesmos com o menor número de arestas
-//Responsável:
+//DIJKSTRA: CAMINHO MÃNIMO (PARA GRAFOS ORIENTADOS OU NÃƒO ORIENTADOS)
+//para um dado grafo (orientado ou nÃ£o, ponderado ou nÃ£o), a funÃ§Ã£o deve receber o Id de dois
+//vÃ©rtices u e v e mostrar um caminho mÃ­nimo entre u e v, bem como o custo deste caminho calculado a
+//partir do algoritmo de Dijkstra. O caminho a ser mostrado consiste na sequÃªncia de vÃ©rtices entre u e v tal
+//que o somatÃ³rio dos pesos das arestas entre vÃ©rtices consecutivos na sequÃªncia seja mÃ­nima. Note que,
+//para grafos nÃ£o ponderados, um caminho mÃ­nimo entre dois vÃ©rtices consiste numa sequÃªncia de vÃ©rtices
+//entre os mesmos com o menor nÃºmero de arestas
+//ResponsÃ¡vel:
 
 void Grafo::dijkstra(No* noU, No* noV, ofstream& arquivo_saida){
     float* distancia = new float[this->getOrdem()];
@@ -445,14 +468,14 @@ void Grafo::auxDijkstra(float* distancia, int* aPercorrer, int* noAnterior, int*
 
 //-----------------------------------------
 
-//FLOYD: CAMINHO MÍNIMO (PARA GRAFOS ORIENTADOS OU NÃO ORIENTADOS)
-//para um dado grafo (orientado ou não, ponderado ou não), a função deve receber o Id de dois
-//vértices u e v e mostrar um caminho mínimo entre u e v, bem como o custo deste caminho calculado a
-//partir do algoritmo de Floyd. O caminho a ser mostrado consiste na sequência de vértices entre u e v tal
-//que o somatório dos pesos das arestas entre vértices consecutivos na sequência seja mínima. Note que,
-//para grafos não ponderados, um caminho mínimo entre dois vértices consiste numa sequência de vértices
-//entre os mesmos com o menor número de arestas
-//Responsável:
+//FLOYD: CAMINHO MÃNIMO (PARA GRAFOS ORIENTADOS OU NÃƒO ORIENTADOS)
+//para um dado grafo (orientado ou nÃ£o, ponderado ou nÃ£o), a funÃ§Ã£o deve receber o Id de dois
+//vÃ©rtices u e v e mostrar um caminho mÃ­nimo entre u e v, bem como o custo deste caminho calculado a
+//partir do algoritmo de Floyd. O caminho a ser mostrado consiste na sequÃªncia de vÃ©rtices entre u e v tal
+//que o somatÃ³rio dos pesos das arestas entre vÃ©rtices consecutivos na sequÃªncia seja mÃ­nima. Note que,
+//para grafos nÃ£o ponderados, um caminho mÃ­nimo entre dois vÃ©rtices consiste numa sequÃªncia de vÃ©rtices
+//entre os mesmos com o menor nÃºmero de arestas
+//ResponsÃ¡vel:
 
 void Grafo::floyd(No noU,No noV, ofstream& arquivo_saida){
 
@@ -460,12 +483,12 @@ void Grafo::floyd(No noU,No noV, ofstream& arquivo_saida){
 
 //-----------------------------------------
 
-//ÁRVORE GERADORA MÍNIMA (PARA GRAFOS NÃO ORIENTADOS PONDERADOS OU NÃO) - PRIM
-//para um dado grafo não orientado (ponderado ou não), utilizando o algoritmo de Prim, a função
-//deve retornar um conjunto com n-1 arestas que conecte todos os nós do grafo e cujo somatório dos pesos
-//das arestas seja mínimo. No caso de grafos não ponderados, qualquer conjunto com n-1 arestas que
-//conecte o grafo é solução do problema
-//Responsável:
+//ÃRVORE GERADORA MÃNIMA (PARA GRAFOS NÃƒO ORIENTADOS PONDERADOS OU NÃƒO) - PRIM
+//para um dado grafo nÃ£o orientado (ponderado ou nÃ£o), utilizando o algoritmo de Prim, a funÃ§Ã£o
+//deve retornar um conjunto com n-1 arestas que conecte todos os nÃ³s do grafo e cujo somatÃ³rio dos pesos
+//das arestas seja mÃ­nimo. No caso de grafos nÃ£o ponderados, qualquer conjunto com n-1 arestas que
+//conecte o grafo Ã© soluÃ§Ã£o do problema
+//ResponsÃ¡vel:
 
 void Grafo::AGMPrim(ofstream& arquivo_saida){
 
@@ -473,30 +496,85 @@ void Grafo::AGMPrim(ofstream& arquivo_saida){
 
 //-----------------------------------------
 
-//ÁRVORE GERADORA MÍNIMA (PARA GRAFOS NÃO ORIENTADOS PONDERADOS OU NÃO) - KRUSKAL
-//para um dado grafo não orientado (ponderado ou não), utilizando o algoritmo de Kruskal, a função
-//deve retornar um conjunto com n-1 arestas que conecte todos os nós do grafo e cujo somatório dos pesos
-//das arestas seja mínimo. No caso de grafos não ponderados, qualquer conjunto com n-1 arestas que
-//conecte o grafo é solução do problema
-//Responsável:
+//ÃRVORE GERADORA MÃNIMA (PARA GRAFOS NÃƒO ORIENTADOS PONDERADOS OU NÃƒO) - KRUSKAL
+//para um dado grafo nÃ£o orientado (ponderado ou nÃ£o), utilizando o algoritmo de Kruskal, a funÃ§Ã£o
+//deve retornar um conjunto com n-1 arestas que conecte todos os nÃ³s do grafo e cujo somatÃ³rio dos pesos
+//das arestas seja mÃ­nimo. No caso de grafos nÃ£o ponderados, qualquer conjunto com n-1 arestas que
+//conecte o grafo Ã© soluÃ§Ã£o do problema
+//ResponsÃ¡vel: Rodrigo
+
+class arestaKruskal {
+public:
+    int origem;
+    int destino;
+    int peso;
+};
 
 void Grafo::AGMKruskal(ofstream& arquivo_saida){
+    int i=0,quantNos=0;
+    int tam = this->getQuantAresta();
+    arestaKruskal *listaAresta = new arestaKruskal[tam];
+    int nosJaVisitados[this->getOrdem()];
 
+
+
+    //Adiciona todas as arestas do grafo em uma lista de arestas
+    for (No* n = this->getPrimeiroNo(); n != nullptr; n = n->getProximoNo()) {
+        nosJaVisitados[quantNos] = n->getId();
+        quantNos++;
+        for(Aresta* a = n->getPrimeiraAresta(); a != nullptr; a = a->getProximaAresta()) {
+            if(!verificaId(nosJaVisitados,a->getIdDestino(),this->getOrdem())) {
+                listaAresta[i].origem = a->getIdOrigem();
+                listaAresta[i].destino = a->getIdDestino();
+                listaAresta[i].peso = a->getPeso();
+                i++;
+            }
+        }
+    }
+
+    //ordena a lista de aresta por peso em ordem crescente
+    arestaKruskal aux;
+    for (int j = 0; j < tam; j++) {
+        for (int k = j+1; k < tam ; k++) {
+            if (listaAresta[j].peso > listaAresta[k].peso) {
+                aux = listaAresta[j];
+                listaAresta[j] = listaAresta[k];
+                listaAresta[k] = aux;
+            }
+        }
+    }
+
+
+    for (int l = 0; l < tam; l++) {
+        cout << listaAresta[l].origem << "/" << listaAresta[l].destino << "-" << listaAresta[l].peso<<endl;
+    }
+
+    delete [] listaAresta;
 }
+
+//verifica se o No jÃ¡ foi visitado, portando nÃ£o serÃ¡ necessÃ¡rio colocar a aresta
+bool Grafo::verificaId(int nosJaVisitados[], int id_no, int tam){
+    for (int i = 0; i < tam; i++) {
+        if(nosJaVisitados[i] == id_no)
+            return true;
+    }
+    return false;
+}
+
 
 //-----------------------------------------
 
-//FECHO TRIÁDICO---------------------------
-//Um fecho triádico ocorre em uma rede social se duas pessoas que tem um amigo em comum
-//também são amigas entre si. O coeficiente de agrupamento (clustering coefficient) de uma rede é uma
-//métrica que indica a frequência com este fenômeno ocorre na rede.
-//Dado um grafo G, chamamos de tríade um par de vértices {u,v} com um vizinho em comum w. Se
-//os vértices u e v são vizinhos, dizemos que a tríade é fechada (este é um caso onde há um fecho triádico).
-//Caso contrário, dizemos que a tríade é aberta. Note que para cada três vértices u, v e w mutuamente
-//adjacentes, existem três tríades fechadas. O coeficiente de agrupamento de um grafo é dado pelo número
-//de tríades fechadas divido pelo total de tríades (incluindo tríades abertas e fechadas). Convencionamos que
-//o coeficiente de agrupamento de um grafo sem tríades é zero.
-//Responsável:
+//FECHO TRIÃDICO---------------------------
+//Um fecho triÃ¡dico ocorre em uma rede social se duas pessoas que tem um amigo em comum
+//tambÃ©m sÃ£o amigas entre si. O coeficiente de agrupamento (clustering coefficient) de uma rede Ã© uma
+//mÃ©trica que indica a frequÃªncia com este fenÃ´meno ocorre na rede.
+//Dado um grafo G, chamamos de trÃ­ade um par de vÃ©rtices {u,v} com um vizinho em comum w. Se
+//os vÃ©rtices u e v sÃ£o vizinhos, dizemos que a trÃ­ade Ã© fechada (este Ã© um caso onde hÃ¡ um fecho triÃ¡dico).
+//Caso contrÃ¡rio, dizemos que a trÃ­ade Ã© aberta. Note que para cada trÃªs vÃ©rtices u, v e w mutuamente
+//adjacentes, existem trÃªs trÃ­ades fechadas. O coeficiente de agrupamento de um grafo Ã© dado pelo nÃºmero
+//de trÃ­ades fechadas divido pelo total de trÃ­ades (incluindo trÃ­ades abertas e fechadas). Convencionamos que
+//o coeficiente de agrupamento de um grafo sem trÃ­ades Ã© zero.
+//ResponsÃ¡vel:
 
 void Grafo::fechoTriadico(ofstream& arquivo_saida){
 

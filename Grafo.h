@@ -19,7 +19,9 @@ private:
 	void auxDijkstra(float* distancia, int* aPercorrer, int* noAnterior, int* mapa, int atual);
 
 public:
+
     //Contrutor e Destrutor
+    Grafo();
     Grafo(int ordem, bool direcionado, bool ponderadoAresta, bool ponderadoNo);
     ~Grafo();
 
@@ -47,6 +49,7 @@ public:
     //FUNCIONALIDADES
 
     void caminhamentoLargura(int id_no, ofstream &arquivo_saida);
+    void auxBuscaEmProfundidade(int id_no, bool* aux,ofstream &arquivo_saida);
     void caminhamentoProfundidade(int id_no, ofstream &arquivo_saida);
     void fechoTransitivoDireto(No* no, ofstream &arquivo_saida);
     void fechoTransitivoIndireto(No* no, ofstream &arquivo_saida);
@@ -55,5 +58,9 @@ public:
     void AGMPrim(ofstream &arquivo_saida);
     void AGMKruskal(ofstream &arquivo_saida);
     void fechoTriadico(ofstream &arquivo_saida);
+
+   //AUXILIARES DAS FUNCIONALIDADES
+   //AGMKruskal
+   bool verificaId(int nosJaVisitados[], int id_no,int tam);
 };
 #endif //TEORIADOSGRAFOS_GRAFO_H
