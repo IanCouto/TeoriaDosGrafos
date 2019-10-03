@@ -14,6 +14,9 @@ Grafo::Grafo(int ordem, bool direcionado, bool ponderado_aresta, bool ponderado_
     this->primeiro_no = this->ultimo_no = nullptr;
     this->quant_aresta = 0;
 }
+Grafo::Grafo(){
+
+}
 
 // Destrutor
 Grafo::~Grafo()
