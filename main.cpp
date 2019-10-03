@@ -50,7 +50,10 @@ void selecionar(int selecao, Grafo* grafo, ofstream& arquivo_saida){
         }
         //Caminhamento em largura
         case 4:{
-
+            int idOrigem;
+            cout << "Digite o id do no inicial: ";
+            cin >> idOrigem;
+            grafo->caminhamentoLargura(idOrigem, arquivo_saida);
             break;
         }
         //Caminhamento em profundidade
