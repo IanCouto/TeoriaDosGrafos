@@ -615,7 +615,66 @@ bool Grafo::verificaId(int nosJaVisitados[], int id_no, int tam){
 //Responsável:
 
 void Grafo::fechoTriadico(ofstream& arquivo_saida){
+    No* no = this->getPrimeiroNo();
+    int triadeFechada = 0;
+    int triadeAberta = 0;
 
+    Aresta* anterior;
+    Aresta* proxima;
+    while(no != nullptr) {
+        anterior = no->getPrimeiraAresta();
+        if(anterior != nullptr) {
+            proxima = anterior->getProximaAresta();
+        } else {
+            proxima = nullptr;
+        }
+        while(proxima != nullptr) {
+            if(ehVizinho(this->getNo(anterior->getIdDestino()), this->getNo(proxima->getIdDestino())))
+                triadeFechada++;
+            else
+                triadeAberta++;
+            anterior = proxima;
+            proxima = proxima->getProximaAresta();
+        }
+        no = no->getProximoNo();
+    }
+
+    double coefTriad;
+    if(triadeFechada == 0 && triadeAberta == 0)
+        coefTriad = 0;
+    coefTriad = (double)(triadeFechada)/(triadeFechada + triadeAberta);
+
+    arquivo_saida<<"------Fecho Triadico------"<<endl;
+    arquivo_saida<<"Triades Fechadas: " << triadeFechada << endl;
+    arquivo_saida<<"Triades Abertas: " << triadeAberta << endl;
+    arquivo_saida<<"Coeficiente de Agrupamento: " << coefTriad << endl;
+    arquivo_saida<<endl<<endl;
+}
+
+bool Grafo::ehVizinho(No* noU, No* noV) {
+    if(this->getDirecionado()) {
+        Aresta* aux = noU->getPrimeiraAresta();
+        while(aux != nullptr){
+            if(aux->getIdDestino() == noV->getId())
+                return true;
+            aux = aux->getProximaAresta();
+        }
+        aux = noV->getPrimeiraAresta();
+        while(aux != nullptr) {
+            if(aux->getIdDestino() == noU->getId())
+                return true;
+            aux = aux->getProximaAresta();
+        }
+        return false;
+    } else {
+        Aresta* aux = noU->getPrimeiraAresta();
+        while(aux != nullptr){
+            if(aux->getIdDestino() == noV->getId())
+                return true;
+            aux = aux->getProximaAresta();
+        }
+        return false;
+    }
 }
 
 //-----------------------------------------

@@ -116,7 +116,7 @@ void selecionar(int selecao, Grafo* grafo, ofstream& arquivo_saida){
         }
         //Fecho triádico
         case 12:{
-
+            grafo->fechoTriadico(arquivo_saida);
             break;
         }
 

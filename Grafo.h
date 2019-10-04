@@ -1,8 +1,8 @@
 #ifndef TEORIADOSGRAFOS_GRAFO_H
 #define TEORIADOSGRAFOS_GRAFO_H
+
 #include <iostream>
 #include <fstream>
-
 #include "No.h"
 
 using namespace std;
@@ -19,6 +19,7 @@ private:
 
     int mapeamento(int* mapa, int id);
 	void auxDijkstra(float* distancia, int* aPercorrer, int* noAnterior, int* mapa, int atual);
+	bool ehVizinho(No* noU, No* noV);
 
 public:
 
@@ -50,7 +51,7 @@ public:
 
     //FUNCIONALIDADES
 
-    void caminhamentoLargura(int id_no, ofstream &arquivo_saida);
+    void caminhamentoLargura(int id_no, ofstream& arquivo_saida);
     void auxBuscaEmProfundidade(int id_no, bool* aux,ofstream &arquivo_saida);
     void caminhamentoProfundidade(int id_no, ofstream &arquivo_saida);
     void fechoTransitivoDireto(No* no, ofstream &arquivo_saida);
