@@ -70,5 +70,7 @@ public:
    bool possuiCiclo();
    int auxPossuiCiclo(int *vetor, int id);
    bool auxPossuiCicloDirecionado(int idDestino, Pilha *nosEmExploracao);
+   //Floyd
+   void criaMatriz(float** matriz);
 };
 #endif //TEORIADOSGRAFOS_GRAFO_H
