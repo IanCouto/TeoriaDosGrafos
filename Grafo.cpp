@@ -118,16 +118,7 @@ bool Grafo::procurarNo(int id){
 
 }
 
-No* Grafo::retornaNo(int id){
 
-    if(this->primeiro_no != nullptr){
-        for(No* aux = primeiro_no; aux != nullptr; aux = aux->getProximoNo())
-            if(aux->getId() == id)
-                return aux;
-    }
-
-    return nullptr;
-}
 
 void Grafo::inserirAresta(int id, int id_destino, float peso){
 
@@ -539,8 +530,68 @@ void Grafo::floyd(No noU,No noV, ofstream& arquivo_saida){
 //das arestas seja mínimo. No caso de grafos não ponderados, qualquer conjunto com n-1 arestas que
 //conecte o grafo é solução do problema
 //Responsável: Ian
+class arestaSimples {
+public:
+    int origem;
+    int destino;
+    int peso;
+};
 
 void Grafo::AGMPrim(ofstream& arquivo_saida){
+
+    int quantNos=0, i, quantArestasSolucao=0;
+    float somatorioPesos = 0;
+    int nosJaVisitados[this->getOrdem()];
+    No * n = primeiro_no;
+    arestaSimples *listaAresta = new arestaSimples[quant_aresta];
+    arestaSimples *listaArestasSolucao = new arestaSimples[quant_aresta];
+
+    //Executar até que ache um no nulo
+    while (n!=nullptr){
+        i=-1;
+        nosJaVisitados[quantNos] = n->getId();
+        quantNos++;
+        for(Aresta* a = n->getPrimeiraAresta(); a != nullptr; a = a->getProximaAresta()) {
+            //só adiciona arestas caso o no de destino ainda nao foi explorado
+            if(!verificaId(nosJaVisitados,a->getIdDestino(),this->getOrdem())) {
+                i++;
+                listaAresta[i].origem = a->getIdOrigem();
+                listaAresta[i].destino = a->getIdDestino();
+                listaAresta[i].peso = a->getPeso();
+
+            }
+        }
+
+        //ordena a lista de aresta por peso em ordem crescente
+        arestaSimples aux;
+        for (int j = 0; j < i; j++) {
+            for (int k = j+1; k < i ; k++) {
+                if (listaAresta[j].peso > listaAresta[k].peso) {
+                    aux = listaAresta[j];
+                    listaAresta[j] = listaAresta[k];
+                    listaAresta[k] = aux;
+                }
+            }
+        }
+
+        //Caso a lista de Arestas possiveis for vazio chegou no ultimo no da solução
+        if(i==-1){
+            break;
+        }
+        listaArestasSolucao[quantArestasSolucao] = listaAresta[0];
+        quantArestasSolucao++;
+        n = getNo(listaAresta[0].destino);
+
+    }
+
+
+    arquivo_saida <<"---------AGM PRIM---------"<< endl;
+    arquivo_saida <<"[No_Origem -> No_Destino] - Peso"<< endl;
+    for (int l = 0; l < quantArestasSolucao; l++) {
+        arquivo_saida <<"[" << listaArestasSolucao[l].origem << " -> " << listaArestasSolucao[l].destino << "] - "<< listaArestasSolucao[l].peso << endl;
+        somatorioPesos += listaArestasSolucao[l].peso;
+    }
+    arquivo_saida <<"Somatorio dos Pesos: " << somatorioPesos << endl;
 
 }
 
@@ -553,17 +604,12 @@ void Grafo::AGMPrim(ofstream& arquivo_saida){
 //conecte o grafo é solução do problema
 //Responsável: Rodrigo
 
-class arestaKruskal {
-public:
-    int origem;
-    int destino;
-    int peso;
-};
+
 
 void Grafo::AGMKruskal(ofstream& arquivo_saida){
     int i=0,quantNos=0;
 
-    arestaKruskal *listaAresta = new arestaKruskal[quant_aresta];
+    arestaSimples *listaAresta = new arestaSimples[quant_aresta];
     int nosJaVisitados[this->getOrdem()];
 
     //Adiciona todas as arestas do grafo em uma lista de arestas
@@ -577,6 +623,7 @@ void Grafo::AGMKruskal(ofstream& arquivo_saida){
                 listaAresta[i].peso = a->getPeso();
                 i++;
             }
+            //em um grafo não direcionado, só adiciona arestas caso o no de destino ainda nao foi explorado
             else if(!verificaId(nosJaVisitados,a->getIdDestino(),this->getOrdem())) {
                 listaAresta[i].origem = a->getIdOrigem();
                 listaAresta[i].destino = a->getIdDestino();
@@ -587,7 +634,7 @@ void Grafo::AGMKruskal(ofstream& arquivo_saida){
     }
 
     //ordena a lista de aresta por peso em ordem crescente
-    arestaKruskal aux;
+    arestaSimples aux;
     for (int j = 0; j < quant_aresta; j++) {
         for (int k = j+1; k < quant_aresta ; k++) {
             if (listaAresta[j].peso > listaAresta[k].peso) {
@@ -600,7 +647,7 @@ void Grafo::AGMKruskal(ofstream& arquivo_saida){
 
     //Cria um grafo de teste para verifica se possui ciclo ao adicionar uma aresta
     Grafo* teste = new Grafo(ordem,direcionado,ponderado_aresta,ponderado_no);
-    arestaKruskal *listaArestasSolucao = new arestaKruskal[quant_aresta];
+    arestaSimples *listaArestasSolucao = new arestaSimples[quant_aresta];
 
     //pecorre toda a lista de arestas colocando cada uma no grafo para verificação de ciclos
     //caso o grafo possua ciclo, a aresta é removida e não será colocada na solução
@@ -612,8 +659,8 @@ void Grafo::AGMKruskal(ofstream& arquivo_saida){
             quantArestasSolucao++;
         }
         else{
-            No *noOrigem = teste->retornaNo(listaAresta[j].origem);
-            No *noDestino = teste->retornaNo(listaAresta[j].destino);
+            No *noOrigem = teste->getNo(listaAresta[j].origem);
+            No *noDestino = teste->getNo(listaAresta[j].destino);
             noOrigem->removerAresta(noDestino->getId(),direcionado,noDestino);
             noDestino->removerAresta(noOrigem->getId(),direcionado,noOrigem);
         }
@@ -641,7 +688,7 @@ bool Grafo::verificaId(int nosJaVisitados[], int id_no, int tam){
     }
     return false;
 }
-
+//verifica se um Grafo direcionado ou nao possui ciclos
 bool Grafo::possuiCiclo(){
     int *vetor = new int[ordem];
     int nosJaVisitados[this->getOrdem()];
@@ -695,7 +742,7 @@ int Grafo::auxPossuiCiclo(int vetor[],int id) {
 }
 
 bool Grafo::auxPossuiCicloDirecionado(int idDestino,Pilha nosEmExploracao[]){
-    No *no = retornaNo(idDestino);
+    No *no = getNo(idDestino);
     nosEmExploracao->empilha(no->getId());
     for (Aresta *a = no->getPrimeiraAresta(); a != nullptr; a = a->getProximaAresta()) {
         if(nosEmExploracao->contemNaPilha(a->getIdDestino()))

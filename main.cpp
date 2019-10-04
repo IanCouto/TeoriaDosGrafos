@@ -106,7 +106,7 @@ void selecionar(int selecao, Grafo* grafo, ofstream& arquivo_saida){
         }
         //Arvore Geradora Minima - Prim
         case 10:{
-
+            grafo->AGMPrim(arquivo_saida);
             break;
         }
         //Arvore Geradora Minima - Kruskal
