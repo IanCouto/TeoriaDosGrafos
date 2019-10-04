@@ -198,6 +198,21 @@ int Grafo::mapeamento(int* mapa, int id) {
     }
 }
 
+Grafo* Grafo::getSubjacente(){
+    Grafo* grafo = new Grafo(this->getOrdem(),false,this->getPonderadoAresta(),this->getPonderadoNo());
+    if(this->getDirecionado()) {
+        for(No* no = this->getPrimeiroNo(); no != nullptr; no = no->getProximoNo()){
+            for(Aresta* aresta = no->getPrimeiraAresta(); aresta != nullptr; aresta = aresta->getProximaAresta()){
+                grafo->inserirAresta(no->getId(), aresta->getIdDestino(), aresta->getPeso());
+                grafo->getNo(no->getId())->setPeso(no->getPeso());
+                grafo->getNo(aresta->getIdDestino())->setPeso(this->getNo(aresta->getIdDestino())->getPeso());
+            }
+        }
+        return grafo;
+    }
+    return nullptr;
+}
+
 //------------FUNCIONALIDADES---------------
 
 //CAMINHAMENTO EM LARGURA-------------------
@@ -518,8 +533,94 @@ void Grafo::auxDijkstra(float* distancia, int* aPercorrer, int* noAnterior, int*
 //entre os mesmos com o menor número de arestas
 //Responsável: Augusto
 
-void Grafo::floyd(No noU,No noV, ofstream& arquivo_saida){
+void Grafo::floyd(No* noU, No* noV, ofstream& arquivo_saida){
+    int* mapa = new int[this->getOrdem()];
+    No* no=this->getPrimeiroNo();
+    for(int i=0; i < this->getOrdem(); no = no->getProximoNo(), i++)
+        mapa[i] = no->getId();
+    float** matriz = new float *[this->getOrdem()];
+    for(int i=0; i<this->getOrdem(); i++)
+        matriz[i] = new float[this->getOrdem()];
+	criaMatriz(matriz, mapa);
 
+	/*for (int k = 0; k < tam; k++) {
+		for (int i = 0; i < tam; i++) {
+			for (int j = 0; j < tam; j++) {
+				if (i != j) {
+					matriz[i][j] = min(matriz[i][j], matriz[i][k] + matriz[k][j]);
+				}
+			}
+		}
+	}*/
+	imprimeMatriz(matriz, arquivo_saida);
+}
+
+void Grafo::criaMatriz(float** matriz, int* mapa) {
+	for (int i=0; i<this->getOrdem(); i++) {
+		for (int j = 0; j < this->getOrdem(); j++) {
+            if(i == j)
+                matriz[i][j] = 0;
+            else
+                matriz[i][j] = -1;
+		}
+	}
+
+	No* no = this->getPrimeiroNo();
+	int indiceAtual;
+	int indiceAresta;
+	if(this->getDirecionado()) {
+        while(no != nullptr) {
+            indiceAtual = mapeamento(mapa, no->getId());
+            Aresta* aresta = no->getPrimeiraAresta();
+            while(aresta != nullptr) {
+                indiceAresta = mapeamento(mapa, aresta->getIdDestino());
+                if(indiceAtual > indiceAresta) {
+                    if(this->getPonderadoAresta())
+                        matriz[indiceAtual][indiceAresta] = aresta->getPeso();
+                    else
+                        matriz[indiceAtual][indiceAresta] = 1;
+                } else {
+                    if(this->getPonderadoAresta())
+                        matriz[indiceAresta][indiceAtual] = aresta->getPeso();
+                    else
+                        matriz[indiceAresta][indiceAtual] = 1;
+                }
+                aresta = aresta->getProximaAresta();
+            }
+            no = no->getProximoNo();
+        }
+	} else {
+	    while(no != nullptr) {
+            indiceAtual = mapeamento(mapa, no->getId());
+            Aresta* aresta = no->getPrimeiraAresta();
+            while(aresta != nullptr) {
+                indiceAresta = mapeamento(mapa, aresta->getIdDestino());
+                if(this->getPonderadoAresta()) {
+                    matriz[indiceAtual][indiceAresta] = aresta->getPeso();
+                    matriz[indiceAresta][indiceAtual] = aresta->getPeso();
+                    cout <<"["<< matriz[indiceAresta][indiceAtual] << " " <<"]";
+                } else {
+                    matriz[indiceAtual][indiceAresta] = 1;
+                    matriz[indiceAresta][indiceAtual] = 1;
+                }
+                aresta = aresta->getProximaAresta();
+            }
+            no = no->getProximoNo();
+        }
+	}
+}
+
+void Grafo::imprimeMatriz(float** matriz, ofstream& arquivo_saida) {
+	arquivo_saida << "---------FLOYD---------" << endl;
+	arquivo_saida << "[Caminho entre noU e noV] - custo de caminho minimo" << endl;
+	for (int i = 0; i < this->getOrdem(); i++) {
+		for (int j = 0; j < this->getOrdem(); j++) {
+			arquivo_saida << "(" << i << ",";
+			arquivo_saida << j << ")";
+			arquivo_saida << " = " << matriz[i][j] << " - ";
+		}
+		arquivo_saida << endl;
+	}
 }
 
 //-----------------------------------------
@@ -770,7 +871,12 @@ bool Grafo::auxPossuiCicloDirecionado(int idDestino,Pilha nosEmExploracao[]){
 //Responsável: Lucas
 
 void Grafo::fechoTriadico(ofstream& arquivo_saida){
-    No* no = this->getPrimeiroNo();
+    Grafo* grafo;
+    if(this->getDirecionado())
+        grafo = this->getSubjacente();
+    else
+        grafo = this;
+    No* no = grafo->getPrimeiroNo();
     int triadeFechada = 0;
     int triadeAberta = 0;
 
@@ -784,7 +890,7 @@ void Grafo::fechoTriadico(ofstream& arquivo_saida){
             proxima = nullptr;
         }
         while(proxima != nullptr) {
-            if(ehVizinho(this->getNo(anterior->getIdDestino()), this->getNo(proxima->getIdDestino())))
+            if(ehVizinho(grafo->getNo(anterior->getIdDestino()), grafo->getNo(proxima->getIdDestino())))
                 triadeFechada++;
             else
                 triadeAberta++;
@@ -804,6 +910,9 @@ void Grafo::fechoTriadico(ofstream& arquivo_saida){
     arquivo_saida<<"Triades Abertas: " << triadeAberta << endl;
     arquivo_saida<<"Coeficiente de Agrupamento: " << coefTriad << endl;
     arquivo_saida<<endl<<endl;
+
+    if(this->getDirecionado())
+        delete grafo;
 }
 
 bool Grafo::ehVizinho(No* noU, No* noV) {

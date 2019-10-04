@@ -101,8 +101,17 @@ void selecionar(int selecao, Grafo* grafo, ofstream& arquivo_saida){
         }
         //Floyd: caminho minimo
         case 9:{
-
-            break;
+		int idOrigem, idDestino;
+		cout << "Digite o id do no inicial: ";
+		cin >> idOrigem;
+		cout << "Digite o id do no de destino: ";
+		cin >> idDestino;
+		if (grafo->procurarNo(idOrigem) && grafo->procurarNo(idDestino)) {
+			grafo->floyd(grafo->getNo(idOrigem), grafo->getNo(idDestino), arquivo_saida);
+		}
+		else
+			cout << endl << "Id inexistente!" << endl;
+            	break;
         }
         //Arvore Geradora Minima - Prim
         case 10:{

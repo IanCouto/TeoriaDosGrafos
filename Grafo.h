@@ -50,6 +50,7 @@ public:
     void mostrarGrafo(ofstream& arquivo_saida);
     void mostrarArestas(ofstream& arquivo_saida);
     void mostrarNos(ofstream& arquivo_saida);
+    Grafo* getSubjacente();
 
     //FUNCIONALIDADES
 
@@ -59,7 +60,7 @@ public:
     void fechoTransitivoDireto(No* no, ofstream &arquivo_saida);
     void fechoTransitivoIndireto(No* no, ofstream &arquivo_saida);
     void dijkstra(No* noU, No* noV, ofstream& arquivo_saida);
-    void floyd(No noU, No noV, ofstream &arquivo_saida);
+    void floyd(No* noU, No* noV, ofstream &arquivo_saida);
     void AGMPrim(ofstream &arquivo_saida);
     void AGMKruskal(ofstream &arquivo_saida);
     void fechoTriadico(ofstream &arquivo_saida);
@@ -70,5 +71,8 @@ public:
    bool possuiCiclo();
    int auxPossuiCiclo(int *vetor, int id);
    bool auxPossuiCicloDirecionado(int idDestino, Pilha *nosEmExploracao);
+   //Floyd
+   void criaMatriz(float** matriz, int* mapa);
+   void imprimeMatriz(float** matriz, ofstream& arquivo_saida);
 };
 #endif //TEORIADOSGRAFOS_GRAFO_H
