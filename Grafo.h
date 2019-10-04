@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include "No.h"
+#include "Pilha.h"
 
 using namespace std;
 
@@ -43,6 +44,7 @@ public:
 
     //Outros Metodos
     bool procurarNo(int id);
+    No *retornaNo(int id);
     void inserirNo(int id);
     void inserirAresta(int id, int id_destino, float peso);
     void mostrarGrafo(ofstream& arquivo_saida);
@@ -65,5 +67,8 @@ public:
    //AUXILIARES DAS FUNCIONALIDADES
    //AGMKruskal
    bool verificaId(int nosJaVisitados[], int id_no,int tam);
+   bool possuiCiclo();
+   int auxPossuiCiclo(int *vetor, int id);
+   bool auxPossuiCicloDirecionado(int idDestino, Pilha *nosEmExploracao);
 };
 #endif //TEORIADOSGRAFOS_GRAFO_H

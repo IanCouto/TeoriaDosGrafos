@@ -13,6 +13,8 @@ No::No(int id){
 
 };
 
+No::No(){}
+
 // Destrutor
 No::~No(){
 

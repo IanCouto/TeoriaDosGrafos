@@ -3,6 +3,7 @@
 #include "Grafo.h"
 #include "No.h"
 #include "FilaEncadeada.h"
+#include "Pilha.h"
 
 
 using namespace std;
@@ -117,6 +118,17 @@ bool Grafo::procurarNo(int id){
 
 }
 
+No* Grafo::retornaNo(int id){
+
+    if(this->primeiro_no != nullptr){
+        for(No* aux = primeiro_no; aux != nullptr; aux = aux->getProximoNo())
+            if(aux->getId() == id)
+                return aux;
+    }
+
+    return nullptr;
+}
+
 void Grafo::inserirAresta(int id, int id_destino, float peso){
 
     //Se algum No nao estiver no grafo
@@ -201,7 +213,7 @@ int Grafo::mapeamento(int* mapa, int id) {
 //a função deve receber como parâmetro o Id de um nó e imprimir o conjunto de arestas visitadas a
 //partir do mesmo em um percurso em largura indicando, para cada uma, se trata-se ou não de uma aresta
 //de retorno
-//Responsável:
+//Responsável:Wiliam
 
 void Grafo::caminhamentoLargura(int id_no, ofstream& arquivo_saida){
     int* mapa = new int[this->getOrdem()];
@@ -279,7 +291,7 @@ void Grafo::caminhamentoProfundidade(int id_no, ofstream& arquivo_saida){
 //FECHO TRANSITIVO DIRETO DE UM DADO NÓ (PARA GRAFO ORIENTADO)
 //para um dado nó v do grafo, a função deve imprimir o Id de todo nó u alcançável por um caminho
 //direcionado com origem em v
-//Responsável:
+//Responsável: Lucas
 
 void Grafo::fechoTransitivoDireto(No* no, ofstream& arquivo_saida){
     if(this->getDirecionado()) {
@@ -344,7 +356,7 @@ void Grafo::fechoTransitivoDireto(No* no, ofstream& arquivo_saida){
 //FECHO TRANSITIVO INDIRETO DE UM DADO NÓ (PARA GRAFO ORIENTADO)
 //para um dado nó v do grafo, a função deve imprimir o Id de todo nó u que pode alcançar o nó v por
 //um caminho direcionado com origem em u
-//Responsável:
+//Responsável: Lucas
 
 void Grafo::fechoTransitivoIndireto(No* no, ofstream& arquivo_saida){
     if(this->getDirecionado()) {
@@ -409,7 +421,7 @@ void Grafo::fechoTransitivoIndireto(No* no, ofstream& arquivo_saida){
 //que o somatório dos pesos das arestas entre vértices consecutivos na sequência seja mínima. Note que,
 //para grafos não ponderados, um caminho mínimo entre dois vértices consiste numa sequência de vértices
 //entre os mesmos com o menor número de arestas
-//Responsável:
+//Responsável: Lucas
 
 void Grafo::dijkstra(No* noU, No* noV, ofstream& arquivo_saida){
     float* distancia = new float[this->getOrdem()];
@@ -513,7 +525,7 @@ void Grafo::auxDijkstra(float* distancia, int* aPercorrer, int* noAnterior, int*
 //que o somatório dos pesos das arestas entre vértices consecutivos na sequência seja mínima. Note que,
 //para grafos não ponderados, um caminho mínimo entre dois vértices consiste numa sequência de vértices
 //entre os mesmos com o menor número de arestas
-//Responsável:
+//Responsável: Augusto
 
 void Grafo::floyd(No noU,No noV, ofstream& arquivo_saida){
 
@@ -526,7 +538,7 @@ void Grafo::floyd(No noU,No noV, ofstream& arquivo_saida){
 //deve retornar um conjunto com n-1 arestas que conecte todos os nós do grafo e cujo somatório dos pesos
 //das arestas seja mínimo. No caso de grafos não ponderados, qualquer conjunto com n-1 arestas que
 //conecte o grafo é solução do problema
-//Responsável:
+//Responsável: Ian
 
 void Grafo::AGMPrim(ofstream& arquivo_saida){
 
@@ -550,18 +562,22 @@ public:
 
 void Grafo::AGMKruskal(ofstream& arquivo_saida){
     int i=0,quantNos=0;
-    int tam = this->getQuantAresta();
-    arestaKruskal *listaAresta = new arestaKruskal[tam];
+
+    arestaKruskal *listaAresta = new arestaKruskal[quant_aresta];
     int nosJaVisitados[this->getOrdem()];
-
-
 
     //Adiciona todas as arestas do grafo em uma lista de arestas
     for (No* n = this->getPrimeiroNo(); n != nullptr; n = n->getProximoNo()) {
         nosJaVisitados[quantNos] = n->getId();
         quantNos++;
         for(Aresta* a = n->getPrimeiraAresta(); a != nullptr; a = a->getProximaAresta()) {
-            if(!verificaId(nosJaVisitados,a->getIdDestino(),this->getOrdem())) {
+            if(direcionado){
+                listaAresta[i].origem = a->getIdOrigem();
+                listaAresta[i].destino = a->getIdDestino();
+                listaAresta[i].peso = a->getPeso();
+                i++;
+            }
+            else if(!verificaId(nosJaVisitados,a->getIdDestino(),this->getOrdem())) {
                 listaAresta[i].origem = a->getIdOrigem();
                 listaAresta[i].destino = a->getIdDestino();
                 listaAresta[i].peso = a->getPeso();
@@ -572,8 +588,8 @@ void Grafo::AGMKruskal(ofstream& arquivo_saida){
 
     //ordena a lista de aresta por peso em ordem crescente
     arestaKruskal aux;
-    for (int j = 0; j < tam; j++) {
-        for (int k = j+1; k < tam ; k++) {
+    for (int j = 0; j < quant_aresta; j++) {
+        for (int k = j+1; k < quant_aresta ; k++) {
             if (listaAresta[j].peso > listaAresta[k].peso) {
                 aux = listaAresta[j];
                 listaAresta[j] = listaAresta[k];
@@ -582,15 +598,42 @@ void Grafo::AGMKruskal(ofstream& arquivo_saida){
         }
     }
 
+    //Cria um grafo de teste para verifica se possui ciclo ao adicionar uma aresta
+    Grafo* teste = new Grafo(ordem,direcionado,ponderado_aresta,ponderado_no);
+    arestaKruskal *listaArestasSolucao = new arestaKruskal[quant_aresta];
 
-    for (int l = 0; l < tam; l++) {
-        cout << listaAresta[l].origem << "/" << listaAresta[l].destino << "-" << listaAresta[l].peso<<endl;
+    //pecorre toda a lista de arestas colocando cada uma no grafo para verificação de ciclos
+    //caso o grafo possua ciclo, a aresta é removida e não será colocada na solução
+    int quantArestasSolucao = 0;
+    for (int j = 0; j < quant_aresta; j++) {
+        teste->inserirAresta(listaAresta[j].origem,listaAresta[j].destino,listaAresta[j].peso);
+        if(!teste->possuiCiclo()) {
+            listaArestasSolucao[quantArestasSolucao] = listaAresta[j];
+            quantArestasSolucao++;
+        }
+        else{
+            No *noOrigem = teste->retornaNo(listaAresta[j].origem);
+            No *noDestino = teste->retornaNo(listaAresta[j].destino);
+            noOrigem->removerAresta(noDestino->getId(),direcionado,noDestino);
+            noDestino->removerAresta(noOrigem->getId(),direcionado,noOrigem);
+        }
     }
+
+
+    //Imprime Solução
+    float somatorioPesos = 0;
+    arquivo_saida <<"---------AGM KRUSKAL---------"<< endl;
+    arquivo_saida <<"[No_Origem -> No_Destino] - Peso"<< endl;
+    for (int l = 0; l < quantArestasSolucao; l++) {
+        arquivo_saida <<"[" << listaArestasSolucao[l].origem << " -> " << listaArestasSolucao[l].destino << "] - "<< listaArestasSolucao[l].peso << endl;
+        somatorioPesos += listaArestasSolucao[l].peso;
+    }
+    arquivo_saida <<"Somatorio dos Pesos: " << somatorioPesos << endl;
 
     delete [] listaAresta;
 }
 
-//verifica se o No já foi visitado, portando não será necessário colocar a aresta
+//verifica se o No já está no vetor de visitados, portando não será necessário colocar a aresta
 bool Grafo::verificaId(int nosJaVisitados[], int id_no, int tam){
     for (int i = 0; i < tam; i++) {
         if(nosJaVisitados[i] == id_no)
@@ -599,7 +642,72 @@ bool Grafo::verificaId(int nosJaVisitados[], int id_no, int tam){
     return false;
 }
 
+bool Grafo::possuiCiclo(){
+    int *vetor = new int[ordem];
+    int nosJaVisitados[this->getOrdem()];
+    int quantNo=0;
+    No* no = primeiro_no;
 
+    for (int i = 0; i < ordem; ++i)
+        vetor[i] = -1;
+
+    if(direcionado){
+        Pilha *nosEmExploracao = new Pilha(ordem);
+        nosEmExploracao->empilha(no->getId());
+        for (Aresta *a = no->getPrimeiraAresta(); a != nullptr; a = a->getProximaAresta()) {
+            cout<<a->getIdDestino()<<endl;
+            if (nosEmExploracao->contemNaPilha(a->getIdDestino()))
+                return true;
+            else
+                if(auxPossuiCicloDirecionado(a->getIdDestino(), nosEmExploracao)) return true;
+        }
+        return false;
+    }
+
+    else{
+
+        for(; no!= nullptr ; no = no -> getProximoNo()) {
+            nosJaVisitados[quantNo] = no->getId();
+            quantNo++;
+            for (Aresta *a = no->getPrimeiraAresta(); a != nullptr; a = a->getProximaAresta()) {
+                if(!verificaId(nosJaVisitados,a->getIdDestino(),quantNo)) {
+                    int v1 = auxPossuiCiclo(vetor, no->getId());
+                    int v2 = auxPossuiCiclo(vetor, a->getIdDestino());
+                    if (v1 == v2) return true;
+                    else {
+                        int v1_set = auxPossuiCiclo(vetor, v1);
+                        int v2_set = auxPossuiCiclo(vetor, v2);
+                        vetor[v1_set] = v2_set;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+}
+
+int Grafo::auxPossuiCiclo(int vetor[],int id) {
+    if(vetor[id] == -1)
+        return id;
+    else
+        auxPossuiCiclo(vetor,vetor[id]);
+}
+
+bool Grafo::auxPossuiCicloDirecionado(int idDestino,Pilha nosEmExploracao[]){
+    No *no = retornaNo(idDestino);
+    nosEmExploracao->empilha(no->getId());
+    for (Aresta *a = no->getPrimeiraAresta(); a != nullptr; a = a->getProximaAresta()) {
+        if(nosEmExploracao->contemNaPilha(a->getIdDestino()))
+            return true;
+        else
+            if(auxPossuiCicloDirecionado(a->getIdDestino(),nosEmExploracao)) return true;
+    }
+
+    nosEmExploracao->desempilha();
+    return false;
+
+}
 //-----------------------------------------
 
 //FECHO TRIÁDICO---------------------------
@@ -612,7 +720,7 @@ bool Grafo::verificaId(int nosJaVisitados[], int id_no, int tam){
 //adjacentes, existem três tríades fechadas. O coeficiente de agrupamento de um grafo é dado pelo número
 //de tríades fechadas divido pelo total de tríades (incluindo tríades abertas e fechadas). Convencionamos que
 //o coeficiente de agrupamento de um grafo sem tríades é zero.
-//Responsável:
+//Responsável: Lucas
 
 void Grafo::fechoTriadico(ofstream& arquivo_saida){
     No* no = this->getPrimeiroNo();

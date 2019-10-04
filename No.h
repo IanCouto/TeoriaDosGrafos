@@ -15,6 +15,7 @@ private:
 public:
     //Contrutor e Destrutor
     No(int id);
+    No();
     ~No();
 
     //Getters
