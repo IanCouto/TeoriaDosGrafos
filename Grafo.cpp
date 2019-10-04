@@ -552,13 +552,25 @@ void Grafo::criaMatriz(float** matriz) {
 	}
 
 	No* n = this->primeiro_no;
-	while (n != nullptr) {
-		Aresta* listaArestas = n->getPrimeiraAresta;
-		while (listaArestas!=nullptr) {
-			matriz[n->getId()][listaArestas->getIdOrigem] = listaArestas->getPeso();
-			listaArestas = listaArestas->getProximaAresta;
+	if (this->ponderado_aresta) {
+		while (n != nullptr) {
+			Aresta* listaArestas = n->getPrimeiraAresta;
+			while (listaArestas != nullptr) {
+				matriz[n->getId()][listaArestas->getIdOrigem] = listaArestas->getPeso();
+				listaArestas = listaArestas->getProximaAresta;
+			}
+			n = n->getProximoNo;
 		}
-		n = n->getProximoNo;
+	}
+	else {
+		while (n != nullptr) {
+			Aresta* listaArestas = n->getPrimeiraAresta;
+			while (listaArestas != nullptr) {
+				matriz[n->getId()][listaArestas->getIdOrigem] = 1;
+				listaArestas = listaArestas->getProximaAresta;
+			}
+			n = n->getProximoNo;
+		}
 	}
 }
 
