@@ -463,6 +463,7 @@ void Grafo::dijkstra(No* noU, No* noV, ofstream& arquivo_saida){
         arquivo_saida << endl << endl;
     } else {
         arquivo_saida << "[" << noU->getId() << ", " << noV->getId() << "] - -1";
+        arquivo_saida << endl << endl;
     }
     delete[] aPercorrer;
     delete[] noAnterior;
@@ -535,27 +536,106 @@ void Grafo::auxDijkstra(float* distancia, int* aPercorrer, int* noAnterior, int*
 
 void Grafo::floyd(No* noU, No* noV, ofstream& arquivo_saida){
     int* mapa = new int[this->getOrdem()];
+    int* aPercorrer = new int[this->getOrdem()];
     No* no=this->getPrimeiroNo();
-    for(int i=0; i < this->getOrdem(); no = no->getProximoNo(), i++)
+    for(int i=0; i < this->getOrdem(); no = no->getProximoNo(), i++) {
         mapa[i] = no->getId();
+        if(mapa[i] == noU->getId())
+            aPercorrer[i] = 0;
+        else
+            aPercorrer[i] = 1;
+    }
     float** matriz = new float *[this->getOrdem()];
-    for(int i=0; i<this->getOrdem(); i++)
+    int* noAterior = new int[this->getOrdem()];
+    for(int i=0; i<this->getOrdem(); i++) {
         matriz[i] = new float[this->getOrdem()];
-	criaMatriz(matriz, mapa);
+        //noAterior[i] = new int[this->getOrdem()];
+    }
+	criaMatriz(matriz, noAterior, mapa);
+    auxFloyd(matriz, aPercorrer, noAterior, mapa, noU->getId(), noU->getId());
 
-	/*for (int k = 0; k < tam; k++) {
-		for (int i = 0; i < tam; i++) {
-			for (int j = 0; j < tam; j++) {
-				if (i != j) {
-					matriz[i][j] = min(matriz[i][j], matriz[i][k] + matriz[k][j]);
-				}
-			}
-		}
-	}*/
-	imprimeMatriz(matriz, arquivo_saida);
+	arquivo_saida << "---------FLOYD---------" << endl;
+	arquivo_saida << "[Caminho entre noU e noV] - custo de caminho minimo" << endl;
+	if(matriz[mapeamento(mapa, noU->getId())][mapeamento(mapa, noV->getId())] != -1) {
+        arquivo_saida << "[" << noV->getId();
+        int caminho = noAterior[mapeamento(mapa, noV->getId())];
+        while(caminho != -1) {
+            arquivo_saida << ", " << caminho;
+            caminho = noAterior[mapeamento(mapa, caminho)];
+        }
+        arquivo_saida << "] - " << matriz[mapeamento(mapa, noU->getId())][mapeamento(mapa, noV->getId())] << endl;
+        arquivo_saida << endl << endl;
+    } else {
+        arquivo_saida << "[" << noU->getId() << ", " << noV->getId() << "] - -1";
+        arquivo_saida << endl << endl;
+    }
 }
 
-void Grafo::criaMatriz(float** matriz, int* mapa) {
+void Grafo::auxFloyd(float** matriz, int* aPercorrer, int* noAnterior, int* mapa, int atual, int idNoU) {
+    No* no = this->getNo(atual);
+    Aresta* aresta = no->getPrimeiraAresta();
+    int indiceNoU = mapeamento(mapa, idNoU);
+    int indiceAtual = mapeamento(mapa, atual);
+    int indiceAresta;
+    while(aresta != nullptr) {
+        indiceAresta = mapeamento(mapa, aresta->getIdDestino());
+
+            if(matriz[indiceNoU][indiceAresta] != -1) {
+                if(this->getPonderadoAresta()) {
+                    if(matriz[indiceNoU][indiceAresta] > matriz[indiceNoU][indiceAtual] + aresta->getPeso()) {
+                        matriz[indiceNoU][indiceAresta] = matriz[indiceNoU][indiceAtual] + aresta->getPeso();
+                        noAnterior[indiceAresta] = atual;
+                    }
+                } else {
+                    if(matriz[indiceNoU][indiceAresta] > matriz[indiceNoU][indiceAtual] + 1) {
+                        matriz[indiceNoU][indiceAresta] > matriz[indiceNoU][indiceAtual] + 1;
+                        noAnterior[indiceAresta] = atual;
+                    }
+                }
+            } else {
+                if(this->getPonderadoAresta()) {
+                    matriz[indiceNoU][indiceAresta] = matriz[indiceNoU][indiceAtual] + aresta->getPeso();
+                    noAnterior[indiceAresta] = atual;
+                } else {
+                    matriz[indiceNoU][indiceAresta] > matriz[indiceNoU][indiceAtual] + 1;
+                    noAnterior[indiceAresta] = atual;
+                }
+            }
+
+        aresta = aresta->getProximaAresta();
+    }
+    int menor = -1;
+    for(int i=0; i < this->getOrdem() && menor == -1; i++){
+        if(aPercorrer[i]) {
+            if(matriz[indiceNoU][i] != -1) {
+                menor = matriz[indiceNoU][i];
+                atual = mapa[i];
+            }
+        }
+    }
+    if(menor != -1) {
+        for(int i=0; i < this->getOrdem(); i++) {
+            if(aPercorrer[i])
+                if(matriz[indiceNoU][i] != -1)
+                    if(matriz[indiceNoU][i] < menor){
+                        menor = matriz[indiceNoU][i];
+                        atual = mapa[i];
+                    }
+        }
+        for(int i=0; i < this->getOrdem(); i++) {
+            if(aPercorrer[i])
+                if(matriz[i][indiceNoU] != -1)
+                    if(matriz[i][indiceNoU] < menor){
+                        menor = matriz[i][indiceNoU];
+                        atual = mapa[i];
+                    }
+        }
+        aPercorrer[indiceAtual] = 0;
+        auxFloyd(matriz, aPercorrer, noAnterior, mapa, atual, idNoU);
+    }
+}
+
+void Grafo::criaMatriz(float** matriz, int* noAnterior, int* mapa) {
 	for (int i=0; i<this->getOrdem(); i++) {
 		for (int j = 0; j < this->getOrdem(); j++) {
             if(i == j)
@@ -563,6 +643,7 @@ void Grafo::criaMatriz(float** matriz, int* mapa) {
             else
                 matriz[i][j] = -1;
 		}
+		noAnterior[i] = -1;
 	}
 
 	No* no = this->getPrimeiroNo();
@@ -607,19 +688,6 @@ void Grafo::criaMatriz(float** matriz, int* mapa) {
             }
             no = no->getProximoNo();
         }
-	}
-}
-
-void Grafo::imprimeMatriz(float** matriz, ofstream& arquivo_saida) {
-	arquivo_saida << "---------FLOYD---------" << endl;
-	arquivo_saida << "[Caminho entre noU e noV] - custo de caminho minimo" << endl;
-	for (int i = 0; i < this->getOrdem(); i++) {
-		for (int j = 0; j < this->getOrdem(); j++) {
-			arquivo_saida << "(" << i << ",";
-			arquivo_saida << j << ")";
-			arquivo_saida << " = " << matriz[i][j] << " - ";
-		}
-		arquivo_saida << endl;
 	}
 }
 

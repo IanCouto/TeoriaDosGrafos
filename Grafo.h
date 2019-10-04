@@ -21,6 +21,7 @@ private:
     int mapeamento(int* mapa, int id);
 	void auxDijkstra(float* distancia, int* aPercorrer, int* noAnterior, int* mapa, int atual);
 	bool ehVizinho(No* noU, No* noV);
+	void auxFloyd(float** matriz, int* aPercorrer, int* noAnterior, int* mapa, int atual, int idNoU);
 
 public:
 
@@ -72,7 +73,6 @@ public:
    int auxPossuiCiclo(int *vetor, int id);
    bool auxPossuiCicloDirecionado(int idDestino, Pilha *nosEmExploracao);
    //Floyd
-   void criaMatriz(float** matriz, int* mapa);
-   void imprimeMatriz(float** matriz, ofstream& arquivo_saida);
+   void criaMatriz(float** matriz, int* noAnterior, int* mapa);
 };
 #endif //TEORIADOSGRAFOS_GRAFO_H
