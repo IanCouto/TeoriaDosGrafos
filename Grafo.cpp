@@ -207,6 +207,21 @@ int Grafo::mapeamento(int* mapa, int id) {
     }
 }
 
+Grafo* Grafo::getSubjacente(){
+    Grafo* grafo = new Grafo(this->getOrdem(),false,this->getPonderadoAresta(),this->getPonderadoNo());
+    if(this->getDirecionado()) {
+        for(No* no = this->getPrimeiroNo(); no != nullptr; no = no->getProximoNo()){
+            for(Aresta* aresta = no->getPrimeiraAresta(); aresta != nullptr; aresta = aresta->getProximaAresta()){
+                grafo->inserirAresta(no->getId(), aresta->getIdDestino(), aresta->getPeso());
+                grafo->getNo(no->getId())->setPeso(no->getPeso());
+                grafo->getNo(aresta->getIdDestino())->setPeso(this->getNo(aresta->getIdDestino())->getPeso());
+            }
+        }
+        return grafo;
+    }
+    return nullptr;
+}
+
 //------------FUNCIONALIDADES---------------
 
 //CAMINHAMENTO EM LARGURA-------------------
@@ -779,7 +794,12 @@ bool Grafo::auxPossuiCicloDirecionado(int idDestino,Pilha nosEmExploracao[]){
 //Responsável: Lucas
 
 void Grafo::fechoTriadico(ofstream& arquivo_saida){
-    No* no = this->getPrimeiroNo();
+    Grafo* grafo;
+    if(this->getDirecionado())
+        grafo = this->getSubjacente();
+    else
+        grafo = this;
+    No* no = grafo->getPrimeiroNo();
     int triadeFechada = 0;
     int triadeAberta = 0;
 
@@ -793,7 +813,7 @@ void Grafo::fechoTriadico(ofstream& arquivo_saida){
             proxima = nullptr;
         }
         while(proxima != nullptr) {
-            if(ehVizinho(this->getNo(anterior->getIdDestino()), this->getNo(proxima->getIdDestino())))
+            if(ehVizinho(grafo->getNo(anterior->getIdDestino()), grafo->getNo(proxima->getIdDestino())))
                 triadeFechada++;
             else
                 triadeAberta++;
@@ -813,6 +833,9 @@ void Grafo::fechoTriadico(ofstream& arquivo_saida){
     arquivo_saida<<"Triades Abertas: " << triadeAberta << endl;
     arquivo_saida<<"Coeficiente de Agrupamento: " << coefTriad << endl;
     arquivo_saida<<endl<<endl;
+
+    if(this->getDirecionado())
+        delete grafo;
 }
 
 bool Grafo::ehVizinho(No* noU, No* noV) {

@@ -50,6 +50,7 @@ public:
     void mostrarGrafo(ofstream& arquivo_saida);
     void mostrarArestas(ofstream& arquivo_saida);
     void mostrarNos(ofstream& arquivo_saida);
+	Grafo* getSubjacente();
 
     //FUNCIONALIDADES
 
