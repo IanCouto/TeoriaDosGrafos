@@ -528,7 +528,38 @@ void Grafo::auxDijkstra(float* distancia, int* aPercorrer, int* noAnterior, int*
 //Responsável: Augusto
 
 void Grafo::floyd(No noU,No noV, ofstream& arquivo_saida){
+    float matriz[this->getQuantAresta][this->getQuantAresta];
+	criaMatriz(matriz, arquivo_saida);
 
+	for (int k = 0; k < tam; k++) {
+		for (int i = 0; i < tam; i++) {
+			for (int j = 0; j < tam; j++) {
+				if (i != j) {
+					matriz[i][j] = min(matriz[i][j], matriz[i][k] + matriz[k][j]);
+				}
+			}
+		}
+	}
+	
+}
+
+void Grafo::criaMatriz(float** matriz) {
+	
+	for (int i = 0; i < this->getOrdem; i++) {
+		for (int j = 0; j < this->getOrdem; j++) {
+			matriz[i][j] = 0;
+		}
+	}
+
+	No* n = this->primeiro_no;
+	while (n != nullptr) {
+		Aresta* listaArestas = n->getPrimeiraAresta;
+		while (listaArestas!=nullptr) {
+			matriz[n->getId()][listaArestas->getIdOrigem] = listaArestas->getPeso();
+			listaArestas = listaArestas->getProximaAresta;
+		}
+		n = n->getProximoNo;
+	}
 }
 
 //-----------------------------------------
