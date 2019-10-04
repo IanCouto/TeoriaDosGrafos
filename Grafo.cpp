@@ -529,7 +529,7 @@ void Grafo::auxDijkstra(float* distancia, int* aPercorrer, int* noAnterior, int*
 
 void Grafo::floyd(No noU,No noV, ofstream& arquivo_saida){
     float matriz[this->getQuantAresta][this->getQuantAresta];
-	criaMatriz(matriz, arquivo_saida);
+	criaMatriz(matriz);
 
 	for (int k = 0; k < tam; k++) {
 		for (int i = 0; i < tam; i++) {
@@ -540,7 +540,7 @@ void Grafo::floyd(No noU,No noV, ofstream& arquivo_saida){
 			}
 		}
 	}
-	
+	imprimeMatriz(matriz);
 }
 
 void Grafo::criaMatriz(float** matriz) {
@@ -571,6 +571,19 @@ void Grafo::criaMatriz(float** matriz) {
 			}
 			n = n->getProximoNo;
 		}
+	}
+}
+
+void Grafo::imprimeMatriz(float* matriz) {
+	arquivo_saida << "---------FLOYD---------" << endl;
+	arquivo_saida << "[Caminho entre noU e noV] - custo de caminho minimo" << endl;
+	for (int i = 0; i < tam; i++) {
+		for (int j = 0; j < tam; j++) {
+			arquivo_saida << "(" << i << ",";
+			arquivo_saida << j << ")";
+			arquivo_saida << " = " << matriz[i][j] << " - ";
+		}
+		arquivo_saida << endl;
 	}
 }
 
