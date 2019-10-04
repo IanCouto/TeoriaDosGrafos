@@ -542,11 +542,17 @@ void Grafo::auxDijkstra(float* distancia, int* aPercorrer, int* noAnterior, int*
 //entre os mesmos com o menor número de arestas
 //Responsável: Augusto
 
-void Grafo::floyd(No noU,No noV, ofstream& arquivo_saida){
-    float matriz[this->getQuantAresta][this->getQuantAresta];
-	criaMatriz(matriz);
+void Grafo::floyd(No* noU, No* noV, ofstream& arquivo_saida){
+    int* mapa = new int[this->getOrdem()];
+    No* no=this->getPrimeiroNo();
+    for(int i=0; i < this->getOrdem(); no = no->getProximoNo(), i++)
+        mapa[i] = no->getId();
+    float** matriz = new float *[this->getOrdem()];
+    for(int i=0; i<this->getOrdem(); i++)
+        matriz[i] = new float[this->getOrdem()];
+	criaMatriz(matriz, mapa);
 
-	for (int k = 0; k < tam; k++) {
+	/*for (int k = 0; k < tam; k++) {
 		for (int i = 0; i < tam; i++) {
 			for (int j = 0; j < tam; j++) {
 				if (i != j) {
@@ -554,46 +560,70 @@ void Grafo::floyd(No noU,No noV, ofstream& arquivo_saida){
 				}
 			}
 		}
-	}
-	imprimeMatriz(matriz);
+	}*/
+	imprimeMatriz(matriz, arquivo_saida);
 }
 
-void Grafo::criaMatriz(float** matriz) {
-	
-	for (int i = 0; i < this->getOrdem; i++) {
-		for (int j = 0; j < this->getOrdem; j++) {
-			matriz[i][j] = 0;
+void Grafo::criaMatriz(float** matriz, int* mapa) {
+	for (int i=0; i<this->getOrdem(); i++) {
+		for (int j = 0; j < this->getOrdem(); j++) {
+            if(i == j)
+                matriz[i][j] = 0;
+            else
+                matriz[i][j] = -1;
 		}
 	}
 
-	No* n = this->primeiro_no;
-	if (this->ponderado_aresta) {
-		while (n != nullptr) {
-			Aresta* listaArestas = n->getPrimeiraAresta;
-			while (listaArestas != nullptr) {
-				matriz[n->getId()][listaArestas->getIdOrigem] = listaArestas->getPeso();
-				listaArestas = listaArestas->getProximaAresta;
-			}
-			n = n->getProximoNo;
-		}
-	}
-	else {
-		while (n != nullptr) {
-			Aresta* listaArestas = n->getPrimeiraAresta;
-			while (listaArestas != nullptr) {
-				matriz[n->getId()][listaArestas->getIdOrigem] = 1;
-				listaArestas = listaArestas->getProximaAresta;
-			}
-			n = n->getProximoNo;
-		}
+	No* no = this->getPrimeiroNo();
+	int indiceAtual;
+	int indiceAresta;
+	if(this->getDirecionado()) {
+        while(no != nullptr) {
+            indiceAtual = mapeamento(mapa, no->getId());
+            Aresta* aresta = no->getPrimeiraAresta();
+            while(aresta != nullptr) {
+                indiceAresta = mapeamento(mapa, aresta->getIdDestino());
+                if(indiceAtual > indiceAresta) {
+                    if(this->getPonderadoAresta())
+                        matriz[indiceAtual][indiceAresta] = aresta->getPeso();
+                    else
+                        matriz[indiceAtual][indiceAresta] = 1;
+                } else {
+                    if(this->getPonderadoAresta())
+                        matriz[indiceAresta][indiceAtual] = aresta->getPeso();
+                    else
+                        matriz[indiceAresta][indiceAtual] = 1;
+                }
+                aresta = aresta->getProximaAresta();
+            }
+            no = no->getProximoNo();
+        }
+	} else {
+	    while(no != nullptr) {
+            indiceAtual = mapeamento(mapa, no->getId());
+            Aresta* aresta = no->getPrimeiraAresta();
+            while(aresta != nullptr) {
+                indiceAresta = mapeamento(mapa, aresta->getIdDestino());
+                if(this->getPonderadoAresta()) {
+                    matriz[indiceAtual][indiceAresta] = aresta->getPeso();
+                    matriz[indiceAresta][indiceAtual] = aresta->getPeso();
+                    cout <<"["<< matriz[indiceAresta][indiceAtual] << " " <<"]";
+                } else {
+                    matriz[indiceAtual][indiceAresta] = 1;
+                    matriz[indiceAresta][indiceAtual] = 1;
+                }
+                aresta = aresta->getProximaAresta();
+            }
+            no = no->getProximoNo();
+        }
 	}
 }
 
-void Grafo::imprimeMatriz(float* matriz) {
+void Grafo::imprimeMatriz(float** matriz, ofstream& arquivo_saida) {
 	arquivo_saida << "---------FLOYD---------" << endl;
 	arquivo_saida << "[Caminho entre noU e noV] - custo de caminho minimo" << endl;
-	for (int i = 0; i < tam; i++) {
-		for (int j = 0; j < tam; j++) {
+	for (int i = 0; i < this->getOrdem(); i++) {
+		for (int j = 0; j < this->getOrdem(); j++) {
 			arquivo_saida << "(" << i << ",";
 			arquivo_saida << j << ")";
 			arquivo_saida << " = " << matriz[i][j] << " - ";
