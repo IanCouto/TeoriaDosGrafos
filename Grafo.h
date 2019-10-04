@@ -72,5 +72,6 @@ public:
    bool auxPossuiCicloDirecionado(int idDestino, Pilha *nosEmExploracao);
    //Floyd
    void criaMatriz(float** matriz);
+   void imprimeMatriz(float* matriz);
 };
 #endif //TEORIADOSGRAFOS_GRAFO_H
