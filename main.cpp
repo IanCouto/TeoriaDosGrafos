@@ -50,12 +50,18 @@ void selecionar(int selecao, Grafo* grafo, ofstream& arquivo_saida){
         }
         //Caminhamento em largura
         case 4:{
-
+            int idOrigem;
+            cout << "Digite o id do no inicial: ";
+            cin >> idOrigem;
+            grafo->caminhamentoLargura(idOrigem, arquivo_saida);
             break;
         }
         //Caminhamento em profundidade
         case 5:{
-
+            int idOrigem;
+            cout << "Digite o id do no inicial: ";
+            cin >> idOrigem;
+            grafo->caminhamentoProfundidade(idOrigem, arquivo_saida);
             break;
         }
         //Fecho transitivo direto de um dado no
@@ -95,22 +101,31 @@ void selecionar(int selecao, Grafo* grafo, ofstream& arquivo_saida){
         }
         //Floyd: caminho minimo
         case 9:{
-
-            break;
+		int idOrigem, idDestino;
+		cout << "Digite o id do no inicial: ";
+		cin >> idOrigem;
+		cout << "Digite o id do no de destino: ";
+		cin >> idDestino;
+		if (grafo->procurarNo(idOrigem) && grafo->procurarNo(idDestino)) {
+			grafo->floyd(grafo->getNo(idOrigem), grafo->getNo(idDestino), arquivo_saida);
+		}
+		else
+			cout << endl << "Id inexistente!" << endl;
+            	break;
         }
         //Arvore Geradora Minima - Prim
         case 10:{
-
+            grafo->AGMPrim(arquivo_saida);
             break;
         }
         //Arvore Geradora Minima - Kruskal
         case 11:{
-
+            grafo->AGMKruskal(arquivo_saida);
             break;
         }
         //Fecho triádico
         case 12:{
-
+            grafo->fechoTriadico(arquivo_saida);
             break;
         }
 
@@ -181,7 +196,7 @@ int main(int argc, char* argv[]) {
     arquivo_entrada.open(argv[1], ios::in);
     arquivo_saida.open(argv[2], ios::out | ios::trunc);
 
-    Grafo* grafo;
+	Grafo* grafo = new Grafo();
 
     if(arquivo_entrada.is_open())
         grafo = leitura(arquivo_entrada, atoi(argv[3]), atoi(argv[4]), atoi(argv[5])); //atoi = converte string para int
